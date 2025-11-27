@@ -72,6 +72,12 @@ ggplot(NY,aes(x=fyDeclared))+
 summary(NY)
 ```
 
+```{r}
+census_processed<- read.csv("Data/census_processed(2020-2024).csv")
+summary(census_processed)
+
+
+```
 
 # Rationale and Research Questions
 
