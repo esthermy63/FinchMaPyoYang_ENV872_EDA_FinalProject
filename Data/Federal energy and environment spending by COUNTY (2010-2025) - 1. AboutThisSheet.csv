@@ -1,0 +1,17 @@
+ABOUT THIS WORKBOOK
+"This data was created by Portland State University and the Northwest Environmental Justice Center. The data was clipped to the federal 468 environment and energy programs identified by the authors (see Tab 3), and processed from https://www.usaspending.gov/ for fiscal years 2008 through April 6, 2025 (see Tab 2). All use of this data should be cited per the suggested citation below.
+
+The authors recommend looking at FY 2010 data onward. USA Spending data for FY 2008 and FY 2009 seem more incomplete.
+
+Suggested citation: Lalande, S., Huber, J., and Cochran, B. 2025. Patterns in Energy and Environment Program Spending: Nationwide. Northwest Environmental Justice Center. Accessed at https://www.pdx.edu/policy-consensus-center/federal-energy-environment-investment-project. "
+
+"DATA DEFINITIONS
+The column headers in tab 2 represent the unique state numeric identifiers (""STATEFP""), state name (""stname""), county numeric identifiers (""COUNTY FP""), county name from USA Spending (""NAMELSAD""), postal codes (stusps""), and state populations from the 2020 U.S. Census (""Population_2020"").
+
+Each county is categorized as fully or not fully rural (""FORHP_Rural"") according to eligibility for HHS Office of Rural Health Policy grant eligability (https://www.hrsa.gov/sites/default/files/hrsa/rural-health/resources/forhp-eligible-areas.pdf);  highly socially vulnerable (""CDC_SVI"") with an index >0.75 according to the Centers for Disease Control SVI index (https://www.atsdr.cdc.gov/place-health/php/svi/svi-frequently-asked-questions-faqs.html); economically distressed or not (""distress_threshold"") according to Economic Development Administration (https://sgp.fas.org/crs/misc/IF12074.pdf); and the proportion of a county's population within 'disadvantaged' census tracts (""Prop_Pop_inDisad"") according to the Council on Environmental Quality's Climate and Economic Justice Screening Tool (https://climateprogramportal.org/resource/climate-and-economic-justice-screening-tool-cejst/).
+
+Some counties may not have state names, and those counties/areas are likely in U.S. Territories.
+
+The spending data for each fiscal year begins with ""TotalFedAction_EnergyEnv_2008"", which is the total federal obligations for a state in FY 2008 across the 468 energy and environment programs listed in tab 3. The next column ""TotalFedAction_2008"" is the total of ALL federal grants and loans for a state in FY 2008. The federal fiscal year runs from October 1 to September 30. For each fiscal year, the spending data is also presented in constant 2024 dollars ""TotalFedAction_EnergyEnv_2008_2024$"" and ""TotalFedAction_2008_2024$"". The spending dollars were adjusted using the GDP implicit price deflator (https://www.bea.gov/data/prices-inflation/gdp-price-deflator).
+
+Beginning at column CP, the data presented is adjusted to a per capita basis using the 2020 state Census population data (column H).  So, ""Total_PerCap_2008"" represents the per capita federal obligations for FY 2008 for a state for ALL federal grants and loans; ""EnergyEnv_PerCap_2008"" represents the per capita federal obligated funds for FY 2008 in a state for the 468 energy and environment programs listed in tab 3. For each fiscal year, the spending data is also presented in constant 2024 dollars ""Total_PerCap_2008_2024$"" and ""EnergyEnv_PerCap_2008_2024$"". The spending dollars were adjusted using the GDP implicit price deflator (https://www.bea.gov/data/prices-inflation/gdp-price-deflator). "
