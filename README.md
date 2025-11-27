@@ -27,11 +27,11 @@ We want to investigate
 
 1. DisasterDeclarationSummaries (https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2)
 
-2.Federal energy and environment spending by COUNTY (https://www.pdx.edu/policy-consensus-center/sites/policyconsensuscenter.web.wdt.pdx.edu/files/2025-06/Energy%20Enviro%20Spending%20Report_FINAL060225_reduced.pdf)
+2. Federal energy and environment spending by COUNTY (https://www.pdx.edu/policy-consensus-center/sites/policyconsensuscenter.web.wdt.pdx.edu/files/2025-06/Energy%20Enviro%20Spending%20Report_FINAL060225_reduced.pdf)
 
-3.Census data
+3. Census data
 
-4.All spatial data comes from us census data (retrieved from Assignment)
+4. All spatial data comes from us census data (retrieved from Assignment)
 
 5. Bureau of economic analysis (https://apps.bea.gov/regional/downloadzip.htm?_gl=1*4m94vr*_ga*MTI0MDQyMTU0NS4xNzY0Mjc4MTU2*_ga_J4698JNNFT*czE3NjQyNzgxNTUkbzEkZzEkdDE3NjQyNzgyNzIkajkkbDAkaDA.)
 
