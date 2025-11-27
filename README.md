@@ -35,6 +35,9 @@ We want to investigate
 
 5. Bureau of economic analysis (https://apps.bea.gov/regional/downloadzip.htm?_gl=1*4m94vr*_ga*MTI0MDQyMTU0NS4xNzY0Mjc4MTU2*_ga_J4698JNNFT*czE3NjQyNzgxNTUkbzEkZzEkdDE3NjQyNzgyNzIkajkkbDAkaDA.)
 
+6. State Population Totals and Components of Change: 2020-2024
+(https://www.census.gov/data/tables/time-series/demo/popest/2020s-state-total.html)
+
 ## Folder structure, file formats, and naming conventions 
 
 <describe the folders contained in the repository, including what type of files they contain>
