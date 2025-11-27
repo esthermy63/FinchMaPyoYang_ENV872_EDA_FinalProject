@@ -19,25 +19,31 @@ library(tidyverse)
 library(sf)
 library(ggplot2)
 
-disasters <- read.csv("./Data/us_disaster_declarations.csv", stringsAsFactors = T)
-counties <- st_read("./Data/Spatial/cb_2018_us_county_20m.shp", stringsAsFactors = T)
+#Disaster dataset: https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2
+
+disasters <- read.csv("./Data/DisasterDeclarationsSummaries.csv", stringsAsFactors = T)
+
+#cencus1 <-  read.csv("./Data/Spatial/ACSSP1Y2024")
+states <- st_read("./Data/Spatial/cb_2018_us_state_20m.shp", stringsAsFactors = T)
+
 
 flood <- disasters %>% 
-  filter(incident_type == "Flood") %>% 
-  select(c(state:incident_type), fips) %>% 
-  filter(fy_declared %in% c(1990:2025)) %>% 
+  filter(incidentType == "Flood") %>% 
+  select(c(state:incidentType), fipsStateCode,fipsCountyCode) %>% 
+  filter(fyDeclared %in% c(1990:2025)) %>% 
   arrange(state)
 
 #convert FIDs into 5 digits
-counties$GEOID <- as.numeric(as.character(counties$GEOID))
-flood.spatial <- left_join(flood, counties, by = c("fips" = "GEOID"))
+#counties$GEOID <- as.numeric(as.character(counties$GEOID))
+states$STATEFP <- as.numeric(as.character(states$STATEFP))
+flood.spatial <- left_join(flood, states, by = c("fipsStateCode" = "STATEFP"))
 summary(flood.spatial) # 113 NAs because some data are located at state level instead of county level.
 
 #clean the spatial data
-st_crs(counties)$epsg #4269
+st_crs(states)$epsg #4269
 flood.spatial <- flood.spatial %>% 
-  select(state,declaration_date,fy_declared, incident_type, fips, 
-         STATEFP, COUNTYFP, NAME, geometry) %>% 
+  select(state,declarationDate,fyDeclared, incidentType, fipsStateCode, 
+        fipsCountyCode, NAME, geometry) %>% 
   #na.omit() %>% 
   st_as_sf(crs = 4269)
 
@@ -46,7 +52,7 @@ mapview(flood.spatial)
 
 ggplot(flood.spatial,aes(x = state))+
   geom_bar()
-#Minnesota has the highest count of flood - ~400 in the past 25 years
+#Minnesota has the highest count of flood - ~471 in the past 25 years
 
 library(leaflet)
 leaflet(st_centroid(flood.spatial)) %>% 
@@ -54,6 +60,16 @@ leaflet(st_centroid(flood.spatial)) %>%
   addMarkers(
     clusterOptions = markerClusterOptions()
   )
+
+
+NY <- flood.spatial %>% 
+  filter(state == 'NY')
+
+NY$fyDeclared <- as.factor(NY$fyDeclared)
+ggplot(NY,aes(x=fyDeclared))+
+  geom_bar()
+
+summary(NY)
 ```
 
 
