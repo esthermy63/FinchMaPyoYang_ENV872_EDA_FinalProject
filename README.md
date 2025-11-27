@@ -33,7 +33,7 @@ We want to investigate
 
 4.All spatial data comes from us census data (retrieved from Assignment)
 
-5. Bureau of economic analysis (https://apps.bea.gov/regional/downloadzip.htm?_gl=1\*4m94vr\*_ga\*MTI0MDQyMTU0NS4xNzY0Mjc4MTU2\*_ga_J4698JNNFT*czE3NjQyNzgxNTUkbzEkZzEkdDE3NjQyNzgyNzIkajkkbDAkaDA.)
+5. Bureau of economic analysis (https://apps.bea.gov/regional/downloadzip.htm?_gl=1*4m94vr*_ga*MTI0MDQyMTU0NS4xNzY0Mjc4MTU2*_ga_J4698JNNFT*czE3NjQyNzgxNTUkbzEkZzEkdDE3NjQyNzgyNzIkajkkbDAkaDA.)
 
 ## Folder structure, file formats, and naming conventions 
 
