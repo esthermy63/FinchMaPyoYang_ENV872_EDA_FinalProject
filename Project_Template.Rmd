@@ -12,21 +12,16 @@ editor_options:
 \newpage
 
 ```{r setup, include=FALSE}
-#test!!
 # Set your working directory
+# Load packages
 getwd()
 library(tidyverse)
 library(sf)
 library(ggplot2)
 
-#Disaster dataset: https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2
-
-disasters <- read.csv("./Data/DisasterDeclarationsSummaries.csv", stringsAsFactors = T)
-
-#cencus1 <-  read.csv("./Data/Spatial/ACSSP1Y2024")
-states <- st_read("./Data/Spatial/cb_2018_us_state_20m.shp", stringsAsFactors = T)
 
 
+# I'll move the codes to other sections later --Yike
 flood <- disasters %>% 
   filter(incidentType == "Flood") %>% 
   select(c(state:incidentType), fipsStateCode,fipsCountyCode) %>% 
@@ -72,11 +67,15 @@ ggplot(NY,aes(x=fyDeclared))+
 summary(NY)
 ```
 
-```{r}
+```{r} 
+# Read the dataframes
 census_processed<- read.csv("Data/census_processed(2020-2024).csv")
 summary(census_processed)
 
+disasters <- read.csv("./Data/DisasterDeclarationsSummaries.csv", stringsAsFactors = T)
+#Disaster dataset: https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2
 
+states <- st_read("./Data/Spatial/cb_2018_us_state_20m.shp", stringsAsFactors = T)
 ```
 
 # Rationale and Research Questions
