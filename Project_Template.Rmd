@@ -69,13 +69,34 @@ summary(NY)
 
 ```{r} 
 # Read the dataframes
-census_processed<- read.csv("Data/census_processed(2020-2024).csv")
-summary(census_processed)
+census_processed<- read.csv("Data/census_processed(2020-2024).csv", stringsAsFactors = T)
+
+Energy_investment<- read.csv("Data/Energy_investment_by_county.csv", stringsAsFactors = T)
 
 disasters <- read.csv("./Data/DisasterDeclarationsSummaries.csv", stringsAsFactors = T)
+
 #Disaster dataset: https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2
 
 states <- st_read("./Data/Spatial/cb_2018_us_state_20m.shp", stringsAsFactors = T)
+
+census_2021 <- read.csv("Data/ACSSPP1Y2021.S0201-2025-11-29T154845.csv", stringsAsFactors = T)
+
+census_2022 <- read.csv("Data/ACSSPP1Y2022.S0201-2025-11-29T154817.csv", stringsAsFactors = T)
+
+census_2023 <- read.csv("Data/ACSSPP1Y2023.S0201-2025-11-29T154759.csv", stringsAsFactors = T)
+
+census_2024 <- read.csv("Data/ACSSPP1Y2024.S0201-2025-11-29T154742.csv", stringsAsFactors = T)
+```
+
+```{r data mingling }
+census_2021 <- census_2021 %>%
+  mutate(year=2021)
+census_2022 <- census_2022 %>%
+  mutate(year=2022)
+census_2023 <- census_2023 %>%
+  mutate(year=2023)
+census_2024 <- census_2024 %>%
+  mutate(year=2024)
 ```
 
 # Rationale and Research Questions
