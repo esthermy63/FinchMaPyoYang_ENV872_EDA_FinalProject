@@ -102,16 +102,6 @@ census_2024 <- read.csv("ACSSPP1Y2024.S0201-2025-11-29T154742.csv", stringsAsFac
 ```
 
 ```{r data mingling }
-census_2021 <- census_2021 %>%
-  mutate(year=2021)
-census_2022 <- census_2022 %>%
-  mutate(year=2022)
-census_2023 <- census_2023 %>%
-  mutate(year=2023)
-census_2024 <- census_2024 %>%
-  mutate(year=2024)
-
-
 #census_2021.columns = census_2021.columns.str.replace(' ','')
 census2021 <- as.data.frame(t(census_2021))
 colnames(census2021) <-c(census2021[1,])
@@ -149,9 +139,22 @@ census2021clean$`No fuel used` <- as.numeric(str_trim(census2021clean$`No fuel u
 census2021clean <- census2021clean%>%
   mutate(child=`Under 5 years` + `5 to 17 years`)
 
-Energy_investment
 
-left_join (census2021clean, Energy_investment, by )
+## Energy dataset
+Energy_investment2021 <- Energy_investment %>% 
+  select(c("STATEFP":"GEOID_fips"),"stname", "TotalFedAction_EnergyEnv_2021")
+
+
+Energy_investment2021$TotalFedAction_EnergyEnv_2021 <- 
+  gsub("\\$ ", "", Energy_investment2021$TotalFedAction_EnergyEnv_2021)
+
+Energy_investment2021 %>% 
+  na.omit()
+
+Energy_investment2021$TotalFedAction_EnergyEnv_2021 <-
+  as.numeric((gsub(",","",Energy_investment2021$TotalFedAction_EnergyEnv_2021)))
+
+
 
 
 ```
