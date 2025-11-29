@@ -18,8 +18,8 @@ getwd()
 library(tidyverse)
 library(sf)
 library(ggplot2)
-
-
+library(mapview)
+library(leaflet)
 
 # I'll move the codes to other sections later --Yike
 flood <- disasters %>% 
@@ -42,14 +42,14 @@ flood.spatial <- flood.spatial %>%
   #na.omit() %>% 
   st_as_sf(crs = 4269)
 
-library(mapview)
+
 mapview(flood.spatial)
 
 ggplot(flood.spatial,aes(x = state))+
   geom_bar()
 #Minnesota has the highest count of flood - ~471 in the past 25 years
 
-library(leaflet)
+
 leaflet(st_centroid(flood.spatial)) %>% 
   addTiles() %>% 
   addMarkers(
@@ -70,10 +70,16 @@ summary(NY)
 ```{r} 
 # Read the dataframes
 census_processed<- read.csv("Data/census_processed(2020-2024).csv", stringsAsFactors = T)
+census_processed<- read.csv("Data/census_processed(2020-2024).csv",stringsAsFactors = T)
+census_processed <- census_processed %>% 
+  mutate(MEAN = rowMeans(across(X2020:X2024)))
+substring(census_processed$State, 2, nchar(census_processed))
+colnames(census_processed) <- c("State","2020","2021","2022","2023","2024")
 
 Energy_investment<- read.csv("Data/Energy_investment_by_county.csv", stringsAsFactors = T)
 
 disasters <- read.csv("./Data/DisasterDeclarationsSummaries.csv", stringsAsFactors = T)
+
 
 #Disaster dataset: https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2
 
@@ -97,6 +103,25 @@ census_2023 <- census_2023 %>%
   mutate(year=2023)
 census_2024 <- census_2024 %>%
   mutate(year=2024)
+
+
+#census_2021.columns = census_2021.columns.str.replace(' ','')
+census2021 <- as.data.frame(t(census_2021))
+colnames(census2021) <-c(census2021[1,])
+
+census2021 <- census2021[-1,]
+census2021clean <- census2021[-c(seq(2,length(census2021),2)),]
+
+colnames(census2021clean) <- str_trim(colnames(census2021clean))
+
+rownames(census2021clean) <- str_sub(rownames(census2021clean), end =-29)
+#rownames(census2021clean) <- gsub("."," ", rownames(census2021clean))
+
+census2021clean <- census2021clean %>% 
+  select("Total population", "Male", "Female", "Under 5 years", "5 to 17 years", "Median age (years)", "Median household income (dollars)", "Occupied housing units","Gas", "Electricity","All other fuels","No fuel used") %>% 
+  mutate(year = 2021, State = rownames(census2021clean)) #%>% 
+  #mutate(State = sub("."," ", State)) # Remove the dots in State names
+
 ```
 
 # Rationale and Research Questions
