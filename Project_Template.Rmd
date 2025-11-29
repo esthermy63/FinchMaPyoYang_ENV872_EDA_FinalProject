@@ -20,6 +20,13 @@ library(sf)
 library(ggplot2)
 library(mapview)
 library(leaflet)
+library(ggplot2)
+
+# Set theme
+mytheme <- theme_classic(base_size = 14) +
+  theme(axis.text = element_text(color = "black"), 
+        legend.position = "top")
+theme_set(mytheme)
 
 # I'll move the codes to other sections later --Yike
 flood <- disasters %>% 
@@ -85,13 +92,13 @@ disasters <- read.csv("./Data/DisasterDeclarationsSummaries.csv", stringsAsFacto
 
 states <- st_read("./Data/Spatial/cb_2018_us_state_20m.shp", stringsAsFactors = T)
 
-census_2021 <- read.csv("Data/ACSSPP1Y2021.S0201-2025-11-29T154845.csv", stringsAsFactors = T)
+census_2021 <- read.csv("ACSSPP1Y2021.S0201-2025-11-29T154845.csv", stringsAsFactors = T)
 
-census_2022 <- read.csv("Data/ACSSPP1Y2022.S0201-2025-11-29T154817.csv", stringsAsFactors = T)
+census_2022 <- read.csv("ACSSPP1Y2022.S0201-2025-11-29T154817.csv", stringsAsFactors = T)
 
-census_2023 <- read.csv("Data/ACSSPP1Y2023.S0201-2025-11-29T154759.csv", stringsAsFactors = T)
+census_2023 <- read.csv("ACSSPP1Y2023.S0201-2025-11-29T154759.csv", stringsAsFactors = T)
 
-census_2024 <- read.csv("Data/ACSSPP1Y2024.S0201-2025-11-29T154742.csv", stringsAsFactors = T)
+census_2024 <- read.csv("ACSSPP1Y2024.S0201-2025-11-29T154742.csv", stringsAsFactors = T)
 ```
 
 ```{r data mingling }
@@ -114,13 +121,38 @@ census2021clean <- census2021[-c(seq(2,length(census2021),2)),]
 
 colnames(census2021clean) <- str_trim(colnames(census2021clean))
 
+
+
 rownames(census2021clean) <- str_sub(rownames(census2021clean), end =-29)
 #rownames(census2021clean) <- gsub("."," ", rownames(census2021clean))
 
 census2021clean <- census2021clean %>% 
   select("Total population", "Male", "Female", "Under 5 years", "5 to 17 years", "Median age (years)", "Median household income (dollars)", "Occupied housing units","Gas", "Electricity","All other fuels","No fuel used") %>% 
-  mutate(year = 2021, State = rownames(census2021clean)) #%>% 
+  mutate(year = 2021, State = rownames(census2021clean))
   #mutate(State = sub("."," ", State)) # Remove the dots in State names
+census2021clean$State <- gsub( "\\."," ",census2021clean$State)
+
+census2021clean$`Total population` <- as.numeric(str_trim(census2021clean$`Total population`))
+census2021clean$`Male` <- as.numeric(str_trim(census2021clean$`Male`))
+census2021clean$Female <- as.numeric(str_trim(census2021clean$`Female`))
+census2021clean$`Under 5 years` <- as.numeric(str_trim(census2021clean$`Under 5 years`))
+census2021clean$`5 to 17 years` <- as.numeric(str_trim(census2021clean$`5 to 17 years`))
+census2021clean$`Median age (years)` <- as.numeric(str_trim(census2021clean$`Median age (years)`))
+census2021clean$`Median household income (dollars)` <- as.numeric(str_trim(census2021clean$`Median household income (dollars)`))
+census2021clean$`Occupied housing units` <- as.numeric(str_trim(census2021clean$`Occupied housing units`))
+census2021clean$Gas <- as.numeric(str_trim(census2021clean$Gas))
+census2021clean$Electricity <- as.numeric(str_trim(census2021clean$Electricity))
+census2021clean$`All other fuels` <- as.numeric(str_trim(census2021clean$`All other fuels`))
+census2021clean$`No fuel used` <- as.numeric(str_trim(census2021clean$`No fuel used`))
+
+ 
+census2021clean <- census2021clean%>%
+  mutate(child=`Under 5 years` + `5 to 17 years`)
+
+Energy_investment
+
+left_join (census2021clean, Energy_investment, by )
+
 
 ```
 
@@ -131,6 +163,10 @@ census2021clean <- census2021clean %>%
 \newpage
 
 # Dataset Information
+```{r}
+
+summary(census2021clean)
+```
 
 
 
@@ -144,6 +180,10 @@ census2021clean <- census2021clean %>%
 
 # Analysis
 
+```{r}
+model <- lm(data = census2021clean, Energy_investment ~ `Total population` + Female + child + `Median age (years)` + `Median household income (dollars)` + `Occupied housing units` + Gas + Electricity + `All other fuels` + `No fuel used`)
+summary(model)
+```
 
 
 ## Question 1: <insert specific question here and add additional subsections for additional questions below, if needed>
