@@ -22,58 +22,13 @@ library(dplyr)
 library(mapview)
 library(leaflet)
 library("GGally")
-
+library(readxl)
 # Set theme
 mytheme <- theme_classic(base_size = 14) +
   theme(axis.text = element_text(color = "black"), 
         legend.position = "top")
 theme_set(mytheme)
 
-# I'll move the codes to other sections later --Yike
-disaster2021 <- disasters %>% 
-  select(c(state:incidentType), fipsStateCode,fipsCountyCode) %>% 
-  filter(fyDeclared %in% c(2021)) %>% 
-  arrange(state) %>% 
-  group_by(state) %>% 
-  summarise(Disasters = n())
-
-#convert FIDs into 5 digits
-#counties$GEOID <- as.numeric(as.character(counties$GEOID))
-states$STATEFP <- as.numeric(as.character(states$STATEFP))
-flood.spatial <- left_join(flood, states, by = c("fipsStateCode" = "STATEFP"))
-summary(flood.spatial) # 113 NAs because some data are located at state level instead of county level.
-
-#clean the spatial data
-st_crs(states)$epsg #4269
-flood.spatial <- flood.spatial %>% 
-  select(state,declarationDate,fyDeclared, incidentType, fipsStateCode, 
-        fipsCountyCode, NAME, geometry) %>% 
-  #na.omit() %>% 
-  st_as_sf(crs = 4269)
-
-
-mapview(flood.spatial)
-
-ggplot(flood.spatial,aes(x = state))+
-  geom_bar()
-#Minnesota has the highest count of flood - ~471 in the past 25 years
-
-
-leaflet(st_centroid(flood.spatial)) %>% 
-  addTiles() %>% 
-  addMarkers(
-    clusterOptions = markerClusterOptions()
-  )
-
-
-NY <- flood.spatial %>% 
-  filter(state == 'NY')
-
-NY$fyDeclared <- as.factor(NY$fyDeclared)
-ggplot(NY,aes(x=fyDeclared))+
-  geom_bar()
-
-summary(NY)
 ```
 
 ```{r} 
@@ -103,7 +58,7 @@ census_2023 <- read.csv("ACSSPP1Y2023.S0201-2025-11-29T154759.csv", stringsAsFac
 census_2024 <- read.csv("ACSSPP1Y2024.S0201-2025-11-29T154742.csv", stringsAsFactors = T)
 ```
 
-```{r data mingling }
+```{r}
 #census_2021.columns = census_2021.columns.str.replace(' ','')
 census2021 <- as.data.frame(t(census_2021))
 colnames(census2021) <-c(census2021[1,])
@@ -177,9 +132,7 @@ disaster2021 <- disasters %>%
 disaster2021 <- left_join(disaster2021, states_names, by = c("state" = "abbrev"))
 
 #Political opinions
-library(readxl)
 Regulate <- read_excel("Data/Regulate_percentage(2021~2024).xlsx")
-View(Regulate)
 colnames(Regulate) 
 
 combined2021 <- left_join(census2021clean, Energy_investment2021_group, by = c("State" = "stname"))
@@ -230,30 +183,41 @@ ggpairs(combined2021, columns = cols, title = "",
 
 # Analysis
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 
-
-model <- lm(data = combined2021, Total_EE_Investment ~ `Total population` + Female + child + `Median age (years)` + `Median household income (dollars)` + Gas + Electricity + `All other fuels` + Disasters + `2021`)
+model <- lm(data = combined2021, Total_EE_Investment ~ `Total population` + Female + child + `Median age (years)` + `Median household income (dollars)` + `Occupied housing units` + Gas + Electricity  + Disasters + `2021`, na.action = na.exclude)
 summary(model)
+#step(model)
 
-model_2 <- lm(data = combined2021, Total_EE_Investment ~ `Total population` +  child + `Median age (years)` + Gas + Electricity + `All other fuels`)
+model_2 <- lm(data = combined2021, Total_EE_Investment ~ `Total population` + child + `Median age (years)` + `Median household income (dollars)` + `Occupied housing units` + Gas + Electricity)
 summary(model_2)
-step(model_2)
-
-model_AIC<- lm(data = combined2021, Total_EE_Investment ~ `Total population` + Female + child + `Median age (years)` + `Median household income (dollars)`  + Gas + Electricity + `All other fuels` + Disasters+ `2021`, na.action = na.exclude)
-step(model_AIC, direction = "both")
-
+#step(model_2)
 
 model_3 <- lm(data = combined2021, Total_EE_Investment~`Total population`+Electricity )
 summary(model_3)
 
 
-model_4 <- lm(data = combined2021, `2021` ~ Total_EE_Investment+ `Total population` + Female + child + `Median age (years)` + `Median household income (dollars)` + Gas + Electricity + `All other fuels` + Disasters,na.action = na.exclude)
-step(model_4)
-summary(model_4)
+log_combined2021<- combined2021%>%
+  mutate(log_pop=log(`Total population`),
+         log_income=log(`Median household income (dollars)`),
+         log_disaster=log(Disasters),
+         log_EE_investment=log(Total_EE_Investment))
 
-model_5 <- lm(data = combined2021, Disasters ~  Total_EE_Investment)
-summary(model_5)
+model_log <- lm(data = log_combined2021, log_EE_investment ~  log_disaster + `2021`, na.action = na.exclude)
+summary(model_log)
+#step(model)
+
+plot2 <- ggplot(combined2021, aes(x=Disasters+`2021`, y = Total_EE_Investment))+
+  geom_point()+
+  geom_smooth(method = 'lm', )
+plot2
+
+plot <- ggplot(log_combined2021, aes(x=log_disaster+`2021`, y = log_EE_investment))+
+  geom_point()+
+  geom_smooth(method = 'lm', )
+plot
+
+ #the orginal data (disaster) does not follow normal distribution, thus need to be log-transformed for linear regression.
 
 ```
 
