@@ -30,11 +30,12 @@ mytheme <- theme_classic(base_size = 14) +
 theme_set(mytheme)
 
 # I'll move the codes to other sections later --Yike
-flood <- disasters %>% 
-  filter(incidentType == "Flood") %>% 
+disaster2021 <- disasters %>% 
   select(c(state:incidentType), fipsStateCode,fipsCountyCode) %>% 
-  filter(fyDeclared %in% c(1990:2025)) %>% 
-  arrange(state)
+  filter(fyDeclared %in% c(2021)) %>% 
+  arrange(state) %>% 
+  group_by(state) %>% 
+  summarise(Disasters = n())
 
 #convert FIDs into 5 digits
 #counties$GEOID <- as.numeric(as.character(counties$GEOID))
@@ -164,7 +165,24 @@ Energy_investment2021_group <- Energy_investment2021 %>%
   summarise(Total_EE_Investment = sum(TotalFedAction_EnergyEnv_2021)) %>% 
   mutate(Year = 2021)
 
+states_names <- data.frame(abbrev = states$STUSPS,
+                           state = states$NAME)
+disaster2021 <- disasters %>% 
+  select(c(state:incidentType), fipsStateCode,fipsCountyCode) %>% 
+  filter(fyDeclared %in% c(2021)) %>% 
+  arrange(state) %>% 
+  group_by(state) %>% 
+  summarise(Disasters = n())
+disaster2021 <- left_join(disaster2021, states_names, by = c("state" = "abbrev"))
+
+
+
 combined2021 <- left_join(census2021clean, Energy_investment2021_group, by = c("State" = "stname"))
+
+combined2021 <- left_join(combined2021, disaster2021, by = c("State" = "state.y"))
+
+spatial2021 <- st_as_sf(combined2021)
+mapview(spatial2021, z = "Male")
 ```
 
 # Rationale and Research Questions
@@ -193,7 +211,7 @@ summary(Energy_investment2021_group)
 # Analysis
 
 ```{r}
-model <- lm(data = combined2021, Total_EE_Investment ~ `Total population` + Female + child + `Median age (years)` + `Median household income (dollars)` + `Occupied housing units` + Gas + Electricity + `All other fuels` + `No fuel used`)
+model <- lm(data = combined2021, Total_EE_Investment ~ `Total population` + Female + child + `Median age (years)` + `Median household income (dollars)` + `Occupied housing units` + Gas + Electricity + `All other fuels` + `No fuel used`+Disasters)
 summary(model)
 ```
 
