@@ -18,6 +18,7 @@ getwd()
 library(tidyverse)
 library(sf)
 library(ggplot2)
+library(dplyr)
 library(mapview)
 library(leaflet)
 library(ggplot2)
@@ -106,8 +107,8 @@ census_2024 <- read.csv("ACSSPP1Y2024.S0201-2025-11-29T154742.csv", stringsAsFac
 census2021 <- as.data.frame(t(census_2021))
 colnames(census2021) <-c(census2021[1,])
 
-census2021 <- census2021[-1,]
-census2021clean <- census2021[-c(seq(2,length(census2021),2)),]
+census2021clean <- census2021[-1,]
+#census2021clean <- census2021[-c(seq(2,length(census2021),2)),]
 
 colnames(census2021clean) <- str_trim(colnames(census2021clean))
 
@@ -148,15 +149,22 @@ Energy_investment2021 <- Energy_investment %>%
 Energy_investment2021$TotalFedAction_EnergyEnv_2021 <- 
   gsub("\\$ ", "", Energy_investment2021$TotalFedAction_EnergyEnv_2021)
 
-Energy_investment2021 %>% 
-  na.omit()
+Energy_investment2021 <- Energy_investment2021 %>%
+  mutate(TotalFedAction_EnergyEnv_2021 =
+           as.numeric(
+             gsub(",", "", trimws(TotalFedAction_EnergyEnv_2021)))
+         ) %>% 
+  na.omit(TotalFedAction_EnergyEnv_2021) %>% 
+  filter(!stname == "")
+  
+summary(Energy_investment2021)
 
-Energy_investment2021$TotalFedAction_EnergyEnv_2021 <-
-  as.numeric((gsub(",","",Energy_investment2021$TotalFedAction_EnergyEnv_2021)))
+Energy_investment2021_group <- Energy_investment2021 %>% 
+  group_by(STATEFP, stname) %>% 
+  summarise(Total_EE_Investment = sum(TotalFedAction_EnergyEnv_2021)) %>% 
+  mutate(Year = 2021)
 
-
-
-
+combined2021 <- left_join(census2021clean, Energy_investment2021_group, by = c("State" = "stname"))
 ```
 
 # Rationale and Research Questions
@@ -169,6 +177,7 @@ Energy_investment2021$TotalFedAction_EnergyEnv_2021 <-
 ```{r}
 
 summary(census2021clean)
+summary(Energy_investment2021_group)
 ```
 
 
@@ -184,7 +193,7 @@ summary(census2021clean)
 # Analysis
 
 ```{r}
-model <- lm(data = census2021clean, Energy_investment ~ `Total population` + Female + child + `Median age (years)` + `Median household income (dollars)` + `Occupied housing units` + Gas + Electricity + `All other fuels` + `No fuel used`)
+model <- lm(data = combined2021, Total_EE_Investment ~ `Total population` + Female + child + `Median age (years)` + `Median household income (dollars)` + `Occupied housing units` + Gas + Electricity + `All other fuels` + `No fuel used`)
 summary(model)
 ```
 
