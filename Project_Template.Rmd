@@ -165,6 +165,7 @@ Energy_investment2021_group <- Energy_investment2021 %>%
   summarise(Total_EE_Investment = sum(TotalFedAction_EnergyEnv_2021)) %>% 
   mutate(Year = 2021)
 
+#Disaster
 states_names <- data.frame(abbrev = states$STUSPS,
                            state = states$NAME)
 disaster2021 <- disasters %>% 
@@ -175,14 +176,20 @@ disaster2021 <- disasters %>%
   summarise(Disasters = n())
 disaster2021 <- left_join(disaster2021, states_names, by = c("state" = "abbrev"))
 
-
+#Political opinions
+library(readxl)
+Regulate <- read_excel("Data/Regulate_percentage(2021~2024).xlsx")
+View(Regulate)
+colnames(Regulate) 
 
 combined2021 <- left_join(census2021clean, Energy_investment2021_group, by = c("State" = "stname"))
 
 combined2021 <- left_join(combined2021, disaster2021, by = c("State" = "state.y"))
 
-spatial2021 <- st_as_sf(combined2021)
-mapview(spatial2021, z = "Male")
+combined2021 <- left_join(combined2021, Regulate, by = c("State" = "GeoName"))
+
+#spatial2021 <- st_as_sf(combined2021)
+#mapview(spatial2021, z = "Male")
 ```
 
 # Rationale and Research Questions
@@ -211,8 +218,30 @@ summary(Energy_investment2021_group)
 # Analysis
 
 ```{r}
-model <- lm(data = combined2021, Total_EE_Investment ~ `Total population` + Female + child + `Median age (years)` + `Median household income (dollars)` + `Occupied housing units` + Gas + Electricity + `All other fuels` + `No fuel used`+Disasters)
+
+
+model <- lm(data = combined2021, Total_EE_Investment ~ `Total population` + Female + child + `Median age (years)` + `Median household income (dollars)` + `Occupied housing units` + Gas + Electricity + `All other fuels` + Disasters + `2021`)
 summary(model)
+
+model_2 <- lm(data = combined2021, Total_EE_Investment ~ `Total population` +  child + `Median age (years)` + Gas + Electricity + `All other fuels`)
+summary(model_2)
+step(model_2)
+
+model_AIC<- lm(data = combined2021, Total_EE_Investment ~ `Total population` + Female + child + `Median age (years)` + `Median household income (dollars)` + `Occupied housing units` + Gas + Electricity + `All other fuels` + Disasters+ `2021`, na.action = na.exclude)
+step(model_AIC, direction = "both")
+
+
+model_3 <- lm(data = combined2021, Total_EE_Investment~`Total population`+Electricity )
+summary(model_3)
+
+
+model_4 <- lm(data = combined2021, `2021` ~ Total_EE_Investment+ `Total population` + Female + child + `Median age (years)` + `Median household income (dollars)` + `Occupied housing units` + Gas + Electricity + `All other fuels` + Disasters,na.action = na.exclude)
+step(model_4)
+summary(model_4)
+
+model_5 <- lm(data = combined2021, Disasters ~  Total_EE_Investment)
+summary(model_5)
+#AIC?
 ```
 
 
