@@ -38,6 +38,12 @@ We want to investigate
 6. State Population Totals and Components of Change: 2020-2024
 (https://www.census.gov/data/tables/time-series/demo/popest/2020s-state-total.html)
 
+7. Regulate C02 percentage data
+(https://climatecommunication.yale.edu/visualizations-data/ycom-us/)
+Marlon, J. R., Wang, X., Bergquist, P., Howe, P., Leiserowitz, A., Maibach, E., Mildenberger, M., and Rosenthal, S. “Change in US state-level public opinion about climate change: 2008–2020.” Environmental Research Letters 17, no. 12 (2022). 124046.
+
+
+
 ## Folder structure, file formats, and naming conventions 
 
 <describe the folders contained in the repository, including what type of files they contain>
