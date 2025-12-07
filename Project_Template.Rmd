@@ -32,7 +32,7 @@ theme_set(mytheme)
 
 ```
 
-```{r} 
+```{r}
 # Read in census data
 census_processed<- read.csv("Data/census_processed(2020-2024).csv", stringsAsFactors = T)
 census_processed<- read.csv("Data/census_processed(2020-2024).csv",stringsAsFactors = T)
@@ -163,7 +163,10 @@ summary(census2021clean)
 summary(Energy_investment2021_group)
 ```
 
-
+Column | Description
+------------- | -------------
+Content Cell  | Content Cell
+Content Cell  | Content Cell
 
 \newpage
 
@@ -188,6 +191,13 @@ ggpairs(combined2021, columns = cols, title = "",
 \newpage
 
 # Analysis
+
+## Question 1: <insert specific question here and add additional subsections for additional questions below, if needed>
+
+## Question 2: 
+
+
+
 
 ```{r message=FALSE, warning=FALSE}
 
@@ -226,12 +236,6 @@ plot
  #the orginal data (disaster) does not follow normal distribution, thus need to be log-transformed for linear regression.
 
 ```
-
-
-## Question 1: <insert specific question here and add additional subsections for additional questions below, if needed>
-
-## Question 2: 
-
 
 
 
