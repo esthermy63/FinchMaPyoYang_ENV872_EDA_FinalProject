@@ -11,15 +11,15 @@ ENV 872 course project for E. Yang, Y. Ma, J. Pyo, M. Finch.
 ## Summary
 
 <describe the purpose of this repository, the information it contains, and any relevant analysis goals. What, why, where, when, how?>
-We want to investigate 
+This project investigates variables affecting energy investment in the United States from 2021 - 2024. We will use Census data, and data on natural disasters and energy investments. 
 
 ## Investigators
 
-<name(s), affiliation(s), contact information, roles (if applicable)>
+Esther Yang, Yike Ma, Jiyeong Pyo, Morgan Finch
 
 ## Keywords
 
-<add relevant keywords here>
+Energy, environment, investments, natural disasters
 
 ## Database Information
 
