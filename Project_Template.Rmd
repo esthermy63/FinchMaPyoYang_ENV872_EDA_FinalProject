@@ -41,6 +41,7 @@ substring(census_processed$State, 2, nchar(census_processed))
 colnames(census_processed) <- c("State","2020","2021","2022","2023","2024")
 
 Energy_investment<- read.csv("Data/Energy_investment_by_county.csv", stringsAsFactors = T)
+Investment_state <- read.csv("./Data/Raw/Federal energy and environment spending by STATE (2010-2025).csv", stringsAsFactors = T)
 
 disasters <- read.csv("./Data/DisasterDeclarationsSummaries.csv", stringsAsFactors = T)
 
@@ -58,7 +59,11 @@ census_2023 <- read.csv("ACSSPP1Y2023.S0201-2025-11-29T154759.csv", stringsAsFac
 census_2024 <- read.csv("ACSSPP1Y2024.S0201-2025-11-29T154742.csv", stringsAsFactors = T)
 ```
 
+
+
 ```{r}
+#Data Wrangling (for 2021)
+
 #census_2021.columns = census_2021.columns.str.replace(' ','')
 census2021 <- as.data.frame(t(census_2021))
 colnames(census2021) <-c(census2021[1,])
@@ -68,13 +73,11 @@ census2021clean <- census2021[-1,]
 
 colnames(census2021clean) <- str_trim(colnames(census2021clean))
 
-
-
 rownames(census2021clean) <- str_sub(rownames(census2021clean), end =-29)
 #rownames(census2021clean) <- gsub("."," ", rownames(census2021clean))
 
 census2021clean <- census2021clean %>% 
-  select("Total population", "Male", "Female", "Under 5 years", "5 to 17 years", "Median age (years)", "Median household income (dollars)", "Occupied housing units","Gas", "Electricity","All other fuels","No fuel used") %>% 
+  select("Total population", "Male", "Female", "Under 5 years", "5 to 17 years", "Median age (years)", "Median household income (dollars)","Gas", "Electricity","All other fuels","No fuel used") %>% 
   mutate(year = 2021, State = rownames(census2021clean))
   #mutate(State = sub("."," ", State)) # Remove the dots in State names
 census2021clean$State <- gsub( "\\."," ",census2021clean$State)
@@ -86,43 +89,61 @@ census2021clean$`Under 5 years` <- as.numeric(str_trim(census2021clean$`Under 5 
 census2021clean$`5 to 17 years` <- as.numeric(str_trim(census2021clean$`5 to 17 years`))
 census2021clean$`Median age (years)` <- as.numeric(str_trim(census2021clean$`Median age (years)`))
 census2021clean$`Median household income (dollars)` <- as.numeric(str_trim(census2021clean$`Median household income (dollars)`))
-census2021clean$`Occupied housing units` <- as.numeric(str_trim(census2021clean$`Occupied housing units`))
+
 census2021clean$Gas <- as.numeric(str_trim(census2021clean$Gas))
 census2021clean$Electricity <- as.numeric(str_trim(census2021clean$Electricity))
 census2021clean$`All other fuels` <- as.numeric(str_trim(census2021clean$`All other fuels`))
 census2021clean$`No fuel used` <- as.numeric(str_trim(census2021clean$`No fuel used`))
 
- 
 census2021clean <- census2021clean%>%
   mutate(child=`Under 5 years` + `5 to 17 years`)
 
 
-## Energy dataset
-Energy_investment2021 <- Energy_investment %>% 
-  select(c("STATEFP":"GEOID_fips"),"stname", "TotalFedAction_EnergyEnv_2021")
-
-
-Energy_investment2021$TotalFedAction_EnergyEnv_2021 <- 
-  gsub("\\$ ", "", Energy_investment2021$TotalFedAction_EnergyEnv_2021)
-
-Energy_investment2021 <- Energy_investment2021 %>%
+## Energy dataset (State Level)
+Investment <- Investment_state %>%  #data for time series
+  select(
+    "TotalFedAction_EnergyEnv_2010","TotalFedAction_2010",
+    "TotalFedAction_EnergyEnv_2011","TotalFedAction_2011",
+    "TotalFedAction_EnergyEnv_2012","TotalFedAction_2012",
+    "TotalFedAction_EnergyEnv_2013","TotalFedAction_2013",
+    "TotalFedAction_EnergyEnv_2014","TotalFedAction_2014",
+    "TotalFedAction_EnergyEnv_2015","TotalFedAction_2015",
+    "TotalFedAction_EnergyEnv_2016","TotalFedAction_2016",
+    "TotalFedAction_EnergyEnv_2017","TotalFedAction_2017",
+    "TotalFedAction_EnergyEnv_2018","TotalFedAction_2018",
+    "TotalFedAction_EnergyEnv_2019","TotalFedAction_2019",
+    "TotalFedAction_EnergyEnv_2020","TotalFedAction_2020",
+    "TotalFedAction_EnergyEnv_2021","TotalFedAction_2021",
+    "TotalFedAction_EnergyEnv_2022","TotalFedAction_2022",
+    "TotalFedAction_EnergyEnv_2023","TotalFedAction_2023",
+    "TotalFedAction_EnergyEnv_2024","TotalFedAction_2024") %>% 
+  mutate(across(contains("FedAction"),
+                ~ as.numeric(str_replace_all(.x, "[\\$,]", "")))) 
+  
+  
+Investment_state_2021 <- Investment_state %>% 
+  select("STATEFP","stname", "stusps","TotalFedAction_EnergyEnv_2021","TotalFedAction_2021")
+Investment_state_2021$TotalFedAction_EnergyEnv_2021 <- 
+gsub("\\$ ", "", Investment_state_2021$TotalFedAction_EnergyEnv_2021)
+Investment_state_2021$TotalFedAction_2021 <- 
+gsub("\\$ ", "", Investment_state_2021$TotalFedAction_2021)
+Investment_state_2021 <- Investment_state_2021 %>% 
   mutate(TotalFedAction_EnergyEnv_2021 =
            as.numeric(
              gsub(",", "", trimws(TotalFedAction_EnergyEnv_2021)))
          ) %>% 
-  na.omit(TotalFedAction_EnergyEnv_2021) %>% 
-  filter(!stname == "")
-  
-summary(Energy_investment2021)
+  mutate(TotalFedAction_2021 =
+           as.numeric(
+             gsub(",", "", trimws(TotalFedAction_2021)))
+         ) %>% 
+  mutate(Ratio = TotalFedAction_EnergyEnv_2021/TotalFedAction_2021,
+         Year = 2021)
 
-Energy_investment2021_group <- Energy_investment2021 %>% 
-  group_by(STATEFP, stname) %>% 
-  summarise(Total_EE_Investment = sum(TotalFedAction_EnergyEnv_2021)) %>% 
-  mutate(Year = 2021)
 
 #Disaster
 states_names <- data.frame(abbrev = states$STUSPS,
-                           state = states$NAME)
+                           state = states$NAME) 
+#The disaster data set has only abbreviation for states, so full names need to be joined from other dataset.
 disaster2021 <- disasters %>% 
   select(c(state:incidentType), fipsStateCode,fipsCountyCode) %>% 
   filter(fyDeclared %in% c(2021)) %>% 
@@ -131,31 +152,37 @@ disaster2021 <- disasters %>%
   summarise(Disasters = n())
 disaster2021 <- left_join(disaster2021, states_names, by = c("state" = "abbrev"))
 
-#Political opinions
-Regulate <- read_excel("Data/Regulate_percentage(2021~2024).xlsx")
-colnames(Regulate) 
 
-combined2021 <- left_join(census2021clean, Energy_investment2021_group, by = c("State" = "stname"))
+#Public awareness
+Regulate <- read_excel("Data/Regulate_percentage(2021~2024).xlsx")
+Regulate2021 <- Regulate %>% 
+  select("GeoName","2021")
+
+
+#Combining all the variables (Demographic, disaster and public awareness)
+combined2021 <- left_join(census2021clean, Investment_state_2021, by = c("State" = "stname"))
 
 combined2021 <- left_join(combined2021, disaster2021, by = c("State" = "state.y"))
 
-combined2021 <- left_join(combined2021, Regulate, by = c("State" = "GeoName"))
+combined2021 <- left_join(combined2021, Regulate2021, by = c("State" = "GeoName"))
 
-#spatial2021 <- st_as_sf(combined2021)
-#mapview(spatial2021, z = "Male")
+
+write.csv(combined2021, file = "./Data/Processed/combined2021.csv")
 ```
 
 # Rationale and Research Questions
 
-
+1. How does the investment change from 2021 to 2024 
+2. What factors affect total energy and environment spending? 
+3. Where does the money go?
 
 \newpage
 
 # Dataset Information
 ```{r}
-
+summary(combined2021)
 summary(census2021clean)
-summary(Energy_investment2021_group)
+summary(Investment_state_2021)
 ```
 
 
@@ -165,7 +192,7 @@ summary(Energy_investment2021_group)
 # Exploratory Analysis 
 
 ```{r}
-cols <- c(1,3,6,7,9,10,15,17,20,24)
+cols <- c(1,3,6,7,9,10,15,18,20,24)
 ggpairs(combined2021, columns = cols, title = "",  
         axisLabels = "show",
         lower = list(continuous = wrap("points", size = 0.4)),
@@ -176,6 +203,9 @@ ggpairs(combined2021, columns = cols, title = "",
     strip.text.x = element_text(size = 5),  
     strip.text.y = element_text(size = 5)
   )
+
+ #Some orginal data (eg. disaster) does not follow normal distribution, thus need to be log-transformed for linear regression.
+
 ```
 
 
@@ -184,40 +214,48 @@ ggpairs(combined2021, columns = cols, title = "",
 # Analysis
 
 ```{r message=FALSE, warning=FALSE}
-
-model <- lm(data = combined2021, Total_EE_Investment ~ `Total population` + Female + child + `Median age (years)` + `Median household income (dollars)` + `Occupied housing units` + Gas + Electricity  + Disasters + `2021`, na.action = na.exclude)
-summary(model)
-#step(model)
-
-model_2 <- lm(data = combined2021, Total_EE_Investment ~ `Total population` + child + `Median age (years)` + `Median household income (dollars)` + `Occupied housing units` + Gas + Electricity)
-summary(model_2)
-#step(model_2)
-
-model_3 <- lm(data = combined2021, Total_EE_Investment~`Total population`+Electricity )
-summary(model_3)
-
-
+#Demographic regression
 log_combined2021<- combined2021%>%
   mutate(log_pop=log(`Total population`),
-         log_income=log(`Median household income (dollars)`),
          log_disaster=log(Disasters),
-         log_EE_investment=log(Total_EE_Investment))
+         log_EE_investment=log(TotalFedAction_EnergyEnv_2021))
 
-model_log <- lm(data = log_combined2021, log_EE_investment ~  log_disaster + `2021`, na.action = na.exclude)
-summary(model_log)
-#step(model)
+model <- lm(data = log_combined2021, log_EE_investment ~ log_pop + Female + child + `Median age (years)` + `Median household income (dollars)`  + Gas + Electricity, na.action = na.exclude)
+summary(model)
+step(model)
 
-plot2 <- ggplot(combined2021, aes(x=Disasters+`2021`, y = Total_EE_Investment))+
+model_2 <- lm(data = log_combined2021, TotalFedAction_EnergyEnv_2021 ~ log_pop + child + `Median age (years)`  + Electricity)
+summary(model_2)
+step(model_2)
+#Among all demographic variables, Total population, electricity and median age population are significantly related to energy and environment investment
+
+
+model_3 <- lm(data = log_combined2021, log_EE_investment ~  log_disaster, na.action = na.exclude)
+summary(model_3) #frequency of disaster is related
+
+model_4 <- lm(data = log_combined2021, log_EE_investment ~  `2021`, na.action = na.exclude)
+summary(model_4) # Public awareness is related
+
+
+plot1 <- ggplot(log_combined2021, aes(x=log_disaster, y = log_EE_investment))+
   geom_point()+
-  geom_smooth(method = 'lm', )
+  geom_smooth(method = 'lm' )+
+  ylab("Logarithm of Energy and Environment Investment")+
+  xlab("Logarithm of the Frequency of Disasters across the US")
+plot1
+
+plot2 <- ggplot(log_combined2021, aes(x=`2021`, y = log_EE_investment))+
+  geom_point()+
+  geom_smooth(method = 'lm' )+
+  ylab("Logarithm of Energy and Environment Investment")+
+  xlab("")
 plot2
 
-plot <- ggplot(log_combined2021, aes(x=log_disaster+`2021`, y = log_EE_investment))+
+plot3 <- ggplot(combined2021, aes(x=Disasters, y = TotalFedAction_EnergyEnv_2021))+
   geom_point()+
-  geom_smooth(method = 'lm', )
-plot
+  geom_smooth(method = 'lm')
+plot3 #plot2 is also an evidence showing why we log transformed the dataset
 
- #the orginal data (disaster) does not follow normal distribution, thus need to be log-transformed for linear regression.
 
 ```
 
