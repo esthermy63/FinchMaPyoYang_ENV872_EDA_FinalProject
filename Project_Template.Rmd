@@ -41,14 +41,13 @@ census_processed <- census_processed %>%
 substring(census_processed$State, 2, nchar(census_processed))
 colnames(census_processed) <- c("State","2020","2021","2022","2023","2024")
 
-#Energy investment data
+#Federal Energy and Environment investment data by county and state
 Energy_investment<- read.csv("Data/Energy_investment_by_county.csv", stringsAsFactors = T)
 Investment_state <- read.csv("./Data/Raw/Federal energy and environment spending by STATE (2010-2025).csv", stringsAsFactors = T)
 
-#natural disaster data
+#Natural disaster data
 disasters <- read.csv("./Data/DisasterDeclarationsSummaries.csv", stringsAsFactors = T)
 
-# https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2
 
 #spatial data
 states <- st_read("./Data/Spatial/cb_2018_us_state_20m.shp", stringsAsFactors = T)
@@ -196,7 +195,14 @@ Detail | Description
 ------------- | -------------
 Data Source  | THE FEDERAL ENERGY AND ENVIRONMENT INVESTMENT PROJECT
 Retrieved from  | https://www.pdx.edu/policy-consensus-center/federal-energy-environment-investment-project 
-Variables Used  | Content Cell
+Variables Used  | Total population, Male, Female, Median age, Median household income, Gas, Electricity, All other fuels, No fuel used, Year, State, Child (age 0-17)
+Date Range  | 2021-2024
+
+Detail | Description
+------------- | -------------
+Data Source  | OpenFEMA Dataset: Disaster Declarations Summaries - v2
+Retrieved from  | https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2
+Variables Used  | State, Disaster Number
 Date Range  | 2021-2024
 
 \newpage
