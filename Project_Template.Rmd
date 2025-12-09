@@ -34,7 +34,7 @@ theme_set(mytheme)
 
 ```{r}
 # Read in census data
-census_processed<- read.csv("Data/census_processed(2020-2024).csv", stringsAsFactors = T)
+census_processed<- read.csv("census_processed(2020-2024).csv", stringsAsFactors = T)
 
 census_processed <- census_processed %>% 
   mutate(MEAN = rowMeans(across(X2020:X2024)))
@@ -42,22 +42,22 @@ substring(census_processed$State, 2, nchar(census_processed))
 colnames(census_processed) <- c("State","2020","2021","2022","2023","2024")
 
 #Federal Energy and Environment investment data by county 
-Energy_investment<- read.csv("Data/Energy_investment_by_county.csv", stringsAsFactors = T)
+Energy_investment<- read.csv("Energy_investment_by_county.csv", stringsAsFactors = T)
 
 #Federal Energy and Environment investment data by state 
-Investment_state <- read.csv("./Data/Raw/Federal energy and environment spending by STATE (2010-2025).csv", stringsAsFactors = T)
+Investment_state <- read.csv("Raw/Federal energy and environment spending by STATE (2010-2025).csv", stringsAsFactors = T)
 
 #Natural disaster data
-disasters <- read.csv("./Data/DisasterDeclarationsSummaries.csv", stringsAsFactors = T)
+disasters <- read.csv("DisasterDeclarationsSummaries.csv", stringsAsFactors = T)
 
 #spatial data
-states <- st_read("./Data/Spatial/cb_2018_us_state_20m.shp", stringsAsFactors = T)
+states <- st_read("Spatial/cb_2018_us_state_20m.shp", stringsAsFactors = T)
 
 
-census_2021 <- read.csv("ACSSPP1Y2021.S0201-2025-11-29T154845.csv", stringsAsFactors = T)
-census_2022 <- read.csv("ACSSPP1Y2022.S0201-2025-11-29T154817.csv", stringsAsFactors = T)
-census_2023 <- read.csv("ACSSPP1Y2023.S0201-2025-11-29T154759.csv", stringsAsFactors = T)
-census_2024 <- read.csv("ACSSPP1Y2024.S0201-2025-11-29T154742.csv", stringsAsFactors = T)
+census_2021 <- read.csv("Census/ACSSPP1Y2021.S0201-2025-11-29T154845.csv", stringsAsFactors = T)
+census_2022 <- read.csv("Census/ACSSPP1Y2022.S0201-2025-11-29T154817.csv", stringsAsFactors = T)
+census_2023 <- read.csv("Census/ACSSPP1Y2023.S0201-2025-11-29T154759.csv", stringsAsFactors = T)
+census_2024 <- read.csv("Census/ACSSPP1Y2024.S0201-2025-11-29T154742.csv", stringsAsFactors = T)
 ```
 
 
@@ -160,7 +160,7 @@ disaster2021 <- disasters %>%
 disaster2021 <- left_join(disaster2021, states_names, by = c("state" = "abbrev"))
 
 #Public awareness
-Regulate <- read_excel("Data/Regulate_percentage(2021~2024).xlsx")
+Regulate <- read_excel("Regulate_percentage(2021~2024).xlsx")
 Regulate2021 <- Regulate %>% 
   select("GeoName","2021")
 
@@ -173,7 +173,281 @@ combined2021 <- left_join(combined2021, disaster2021, by = c("State" = "State"))
 combined2021 <- left_join(combined2021, Regulate2021, by = c("State" = "GeoName"))
 
 
-write.csv(combined2021, file = "./Data/Processed/combined2021.csv")
+
+write.csv(combined2021, file = "Processed/combined2021.csv")
+```
+
+```{r}
+#Data Wrangling (for 2022)
+##Clean the data
+
+census2022 <- as.data.frame(t(census_2022))
+colnames(census2022) <- c(census2022[1,])
+
+census2022clean <- census2022[-1,]
+
+colnames(census2022clean) <- str_trim(colnames(census2022clean))
+
+rownames(census2022clean) <- str_sub(rownames(census2022clean), end = -29)
+
+census2022clean <- census2022clean %>% 
+  select("Total population", "Male", "Female", "Under 5 years", "5 to 17 years",
+         "Median age (years)", "Median household income (dollars)",
+         "Gas", "Electricity", "All other fuels", "No fuel used") %>% 
+  mutate(year = 2022, State = rownames(census2022clean))
+
+census2022clean$State <- gsub("\\.", " ", census2022clean$State)
+
+# Numeric conversions
+cols_to_num <- c("Total population","Male","Female","Under 5 years","5 to 17 years",
+                 "Median age (years)","Median household income (dollars)",
+                 "Gas","Electricity","All other fuels","No fuel used")
+
+census2022clean[cols_to_num] <- lapply(census2022clean[cols_to_num],
+                                       function(x) as.numeric(str_trim(x)))
+
+# Child column
+census2022clean <- census2022clean %>%
+  mutate(child = `Under 5 years` + `5 to 17 years`)
+
+
+## Energy dataset (State Level)
+Investment <- Investment_state %>% 
+  select(
+    "TotalFedAction_EnergyEnv_2010","TotalFedAction_2010",
+    "TotalFedAction_EnergyEnv_2011","TotalFedAction_2011",
+    "TotalFedAction_EnergyEnv_2012","TotalFedAction_2012",
+    "TotalFedAction_EnergyEnv_2013","TotalFedAction_2013",
+    "TotalFedAction_EnergyEnv_2014","TotalFedAction_2014",
+    "TotalFedAction_EnergyEnv_2015","TotalFedAction_2015",
+    "TotalFedAction_EnergyEnv_2016","TotalFedAction_2016",
+    "TotalFedAction_EnergyEnv_2017","TotalFedAction_2017",
+    "TotalFedAction_EnergyEnv_2018","TotalFedAction_2018",
+    "TotalFedAction_EnergyEnv_2019","TotalFedAction_2019",
+    "TotalFedAction_EnergyEnv_2020","TotalFedAction_2020",
+    "TotalFedAction_EnergyEnv_2021","TotalFedAction_2021",
+    "TotalFedAction_EnergyEnv_2022","TotalFedAction_2022",
+    "TotalFedAction_EnergyEnv_2023","TotalFedAction_2023",
+    "TotalFedAction_EnergyEnv_2024","TotalFedAction_2024") %>% 
+  mutate(across(contains("FedAction"),
+                ~ as.numeric(str_replace_all(.x, "[\\$,]", "")))) 
+
+
+Investment_state_2022 <- Investment_state %>% 
+  select("STATEFP","stname","stusps",
+         "TotalFedAction_EnergyEnv_2022","TotalFedAction_2022")
+
+Investment_state_2022$TotalFedAction_EnergyEnv_2022 <- 
+  gsub("\\$ ", "", Investment_state_2022$TotalFedAction_EnergyEnv_2022)
+
+Investment_state_2022$TotalFedAction_2022 <- 
+  gsub("\\$ ", "", Investment_state_2022$TotalFedAction_2022)
+
+Investment_state_2022 <- Investment_state_2022 %>% 
+  mutate(TotalFedAction_EnergyEnv_2022 =
+           as.numeric(gsub(",", "", trimws(TotalFedAction_EnergyEnv_2022)))) %>% 
+  mutate(TotalFedAction_2022 =
+           as.numeric(gsub(",", "", trimws(TotalFedAction_2022)))) %>% 
+  mutate(Ratio = TotalFedAction_EnergyEnv_2022 / TotalFedAction_2022,
+         Year = 2022)
+
+
+#Disaster
+states_names <- data.frame(abbrev = states$STUSPS,
+                           State = states$NAME)
+
+disaster2022 <- disasters %>% 
+  filter(fyDeclared %in% c(2022)) %>% 
+  arrange(state) %>% 
+  group_by(state, fipsStateCode) %>% 
+  summarise(Disasters = n())
+
+disaster2022 <- left_join(disaster2022, states_names, by = c("state" = "abbrev"))
+
+#Public awareness
+Regulate <- read_excel("Regulate_percentage(2021~2024).xlsx")
+Regulate2022 <- Regulate %>% 
+  select("GeoName","2022")
+
+
+#Combined dataset
+combined2022 <- left_join(census2022clean, Investment_state_2022,
+                          by = c("State" = "stname"))
+
+combined2022 <- left_join(combined2022, disaster2022,
+                          by = c("State" = "State"))
+
+combined2022 <- left_join(combined2022, Regulate2022,
+                          by = c("State" = "GeoName"))
+
+write.csv(combined2022, file = "Processed/combined2022.csv")
+
+```
+
+```{r}
+# Data Wrangling (for 2023)
+## Clean the data
+
+census2023 <- as.data.frame(t(census_2023))
+colnames(census2023) <- c(census2023[1,])
+census2023clean <- census2023[-1,]
+
+colnames(census2023clean) <- str_trim(colnames(census2023clean))
+rownames(census2023clean) <- str_sub(rownames(census2023clean), end = -29)
+
+census2023clean <- census2023clean %>% 
+  select("Total population", "Male", "Female", "Under 5 years", "5 to 17 years",
+         "Median age (years)", "Median household income (dollars)",
+         "Gas", "Electricity", "All other fuels", "No fuel used") %>% 
+  mutate(year = 2023, State = rownames(census2023clean))
+
+census2023clean$State <- gsub("\\.", " ", census2023clean$State)
+
+# Numeric conversions
+cols_to_num <- c("Total population","Male","Female","Under 5 years","5 to 17 years",
+                 "Median age (years)","Median household income (dollars)",
+                 "Gas","Electricity","All other fuels","No fuel used")
+
+census2023clean[cols_to_num] <- lapply(census2023clean[cols_to_num],
+                                       function(x) as.numeric(str_trim(x)))
+
+# Child column
+census2023clean <- census2023clean %>%
+  mutate(child = `Under 5 years` + `5 to 17 years`)
+
+
+## Energy dataset (State Level)
+Investment_state_2023 <- Investment_state %>% 
+  select("STATEFP","stname","stusps",
+         "TotalFedAction_EnergyEnv_2023","TotalFedAction_2023")
+
+Investment_state_2023$TotalFedAction_EnergyEnv_2023 <- 
+  gsub("\\$ ", "", Investment_state_2023$TotalFedAction_EnergyEnv_2023)
+Investment_state_2023$TotalFedAction_2023 <- 
+  gsub("\\$ ", "", Investment_state_2023$TotalFedAction_2023)
+
+Investment_state_2023 <- Investment_state_2023 %>% 
+  mutate(TotalFedAction_EnergyEnv_2023 =
+           as.numeric(gsub(",", "", trimws(TotalFedAction_EnergyEnv_2023)))) %>% 
+  mutate(TotalFedAction_2023 =
+           as.numeric(gsub(",", "", trimws(TotalFedAction_2023)))) %>% 
+  mutate(Ratio = TotalFedAction_EnergyEnv_2023 / TotalFedAction_2023,
+         Year = 2023)
+
+
+# Disaster
+states_names <- data.frame(abbrev = states$STUSPS,
+                           State = states$NAME)
+
+disaster2023 <- disasters %>% 
+  filter(fyDeclared %in% c(2023)) %>% 
+  arrange(state) %>% 
+  group_by(state, fipsStateCode) %>% 
+  summarise(Disasters = n())
+
+disaster2023 <- left_join(disaster2023, states_names, by = c("state" = "abbrev"))
+
+# Public awareness
+Regulate <- read_excel("Regulate_percentage(2021~2024).xlsx")
+Regulate2023 <- Regulate %>% 
+  select("GeoName","2023")
+
+
+# Combined dataset
+combined2023 <- left_join(census2023clean, Investment_state_2023,
+                          by = c("State" = "stname"))
+
+combined2023 <- left_join(combined2023, disaster2023,
+                          by = c("State" = "State"))
+
+combined2023 <- left_join(combined2023, Regulate2023,
+                          by = c("State" = "GeoName"))
+
+write.csv(combined2023, file = "Processed/combined2023.csv")
+
+```
+
+```{r}
+# Data Wrangling (for 2024)
+## Clean the data
+
+census2024 <- as.data.frame(t(census_2024))
+colnames(census2024) <- c(census2024[1,])
+census2024clean <- census2024[-1,]
+
+colnames(census2024clean) <- str_trim(colnames(census2024clean))
+rownames(census2024clean) <- str_sub(rownames(census2024clean), end = -29)
+
+census2024clean <- census2024clean %>% 
+  select("Total population", "Male", "Female", "Under 5 years", "5 to 17 years",
+         "Median age (years)", "Median household income (dollars)",
+         "Gas", "Electricity", "All other fuels", "No fuel used") %>% 
+  mutate(year = 2024, State = rownames(census2024clean))
+
+census2024clean$State <- gsub("\\.", " ", census2024clean$State)
+
+# Numeric conversions
+cols_to_num <- c("Total population","Male","Female","Under 5 years","5 to 17 years",
+                 "Median age (years)","Median household income (dollars)",
+                 "Gas","Electricity","All other fuels","No fuel used")
+
+census2024clean[cols_to_num] <- lapply(census2024clean[cols_to_num],
+                                       function(x) as.numeric(str_trim(x)))
+
+# Child column
+census2024clean <- census2024clean %>%
+  mutate(child = `Under 5 years` + `5 to 17 years`)
+
+
+## Energy dataset (State Level)
+Investment_state_2024 <- Investment_state %>% 
+  select("STATEFP","stname","stusps",
+         "TotalFedAction_EnergyEnv_2024","TotalFedAction_2024")
+
+Investment_state_2024$TotalFedAction_EnergyEnv_2024 <- 
+  gsub("\\$ ", "", Investment_state_2024$TotalFedAction_EnergyEnv_2024)
+Investment_state_2024$TotalFedAction_2024 <- 
+  gsub("\\$ ", "", Investment_state_2024$TotalFedAction_2024)
+
+Investment_state_2024 <- Investment_state_2024 %>% 
+  mutate(TotalFedAction_EnergyEnv_2024 =
+           as.numeric(gsub(",", "", trimws(TotalFedAction_EnergyEnv_2024)))) %>% 
+  mutate(TotalFedAction_2024 =
+           as.numeric(gsub(",", "", trimws(TotalFedAction_2024)))) %>% 
+  mutate(Ratio = TotalFedAction_EnergyEnv_2024 / TotalFedAction_2024,
+         Year = 2024)
+
+
+# Disaster
+states_names <- data.frame(abbrev = states$STUSPS,
+                           State = states$NAME)
+
+disaster2024 <- disasters %>% 
+  filter(fyDeclared %in% c(2024)) %>% 
+  arrange(state) %>% 
+  group_by(state, fipsStateCode) %>% 
+  summarise(Disasters = n())
+
+disaster2024 <- left_join(disaster2024, states_names, by = c("state" = "abbrev"))
+
+# Public awareness
+Regulate <- read_excel("Regulate_percentage(2021~2024).xlsx")
+Regulate2024 <- Regulate %>% 
+  select("GeoName","2024")
+
+
+# Combined dataset
+combined2024 <- left_join(census2024clean, Investment_state_2024,
+                          by = c("State" = "stname"))
+
+combined2024 <- left_join(combined2024, disaster2024,
+                          by = c("State" = "State"))
+
+combined2024 <- left_join(combined2024, Regulate2024,
+                          by = c("State" = "GeoName"))
+
+write.csv(combined2024, file = "Processed/combined2024.csv")
+
 ```
 
 # Rationale and Research Questions
@@ -211,7 +485,7 @@ Date Range  | 2021-2024
 
 ```{r}
 #create exploratory plot
-cols <- c(1,3,6,7,9,10,15,18,20,24)
+cols <- c(1,3,6,7,9,10,15,18,24)
 
 ggpairs(combined2021, columns = cols, title = "",  
         axisLabels = "show",
