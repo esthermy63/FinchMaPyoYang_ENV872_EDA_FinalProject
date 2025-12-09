@@ -224,7 +224,7 @@ ggpairs(combined2021, columns = cols, title = "",
     strip.text.y = element_text(size = 5)
   )
 
- #Some orginal data (eg. disaster) does not follow normal distribution, thus need to be log-transformed for linear regression.
+ 
 
 ```
 
@@ -241,7 +241,8 @@ ggpairs(combined2021, columns = cols, title = "",
 ## Question 2: What factors affect total federal energy and environment spending? 
 
 ```{r message=FALSE, warning=FALSE}
-#Demographic regression
+#Demographic Linear regression
+#Some orginal data (eg. disaster) does not follow normal distribution, thus need to be log-transformed for linear regression.
 log_combined2021<- combined2021%>%
   mutate(log_pop=log(`Total population`),
          log_disaster=log(Disasters),
