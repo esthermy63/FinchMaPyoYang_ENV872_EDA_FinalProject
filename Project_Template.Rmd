@@ -34,7 +34,7 @@ theme_set(mytheme)
 
 ```{r}
 # Read in census data
-census_processed<- read.csv("census_processed(2020-2024).csv", stringsAsFactors = T)
+census_processed<- read.csv(".Data/census_processed(2020-2024).csv", stringsAsFactors = T)
 
 census_processed <- census_processed %>% 
   mutate(MEAN = rowMeans(across(X2020:X2024)))
@@ -54,10 +54,10 @@ disasters <- read.csv("DisasterDeclarationsSummaries.csv", stringsAsFactors = T)
 states <- st_read("Spatial/cb_2018_us_state_20m.shp", stringsAsFactors = T)
 
 
-census_2021 <- read.csv("Census/ACSSPP1Y2021.S0201-2025-11-29T154845.csv", stringsAsFactors = T)
-census_2022 <- read.csv("Census/ACSSPP1Y2022.S0201-2025-11-29T154817.csv", stringsAsFactors = T)
-census_2023 <- read.csv("Census/ACSSPP1Y2023.S0201-2025-11-29T154759.csv", stringsAsFactors = T)
-census_2024 <- read.csv("Census/ACSSPP1Y2024.S0201-2025-11-29T154742.csv", stringsAsFactors = T)
+census_2021 <- read.csv(".Data/Census/ACSSPP1Y2021.S0201-2025-11-29T154845.csv", stringsAsFactors = T)
+census_2022 <- read.csv(".Data/Census/ACSSPP1Y2022.S0201-2025-11-29T154817.csv", stringsAsFactors = T)
+census_2023 <- read.csv(".Data/Census/ACSSPP1Y2023.S0201-2025-11-29T154759.csv", stringsAsFactors = T)
+census_2024 <- read.csv(".Data/Census/ACSSPP1Y2024.S0201-2025-11-29T154742.csv", stringsAsFactors = T)
 ```
 
 
@@ -174,7 +174,7 @@ combined2021 <- left_join(combined2021, Regulate2021, by = c("State" = "GeoName"
 
 
 
-write.csv(combined2021, file = "Processed/combined2021.csv")
+write.csv(combined2021, file = ".Data/Processed/combined2021.csv")
 ```
 
 ```{r}
@@ -280,7 +280,7 @@ combined2022 <- left_join(combined2022, disaster2022,
 combined2022 <- left_join(combined2022, Regulate2022,
                           by = c("State" = "GeoName"))
 
-write.csv(combined2022, file = "Processed/combined2022.csv")
+write.csv(combined2022, file = ".Data/Processed/combined2022.csv")
 
 ```
 
@@ -363,7 +363,7 @@ combined2023 <- left_join(combined2023, disaster2023,
 combined2023 <- left_join(combined2023, Regulate2023,
                           by = c("State" = "GeoName"))
 
-write.csv(combined2023, file = "Processed/combined2023.csv")
+write.csv(combined2023, file = ".Data/Processed/combined2023.csv")
 
 ```
 
@@ -446,7 +446,7 @@ combined2024 <- left_join(combined2024, disaster2024,
 combined2024 <- left_join(combined2024, Regulate2024,
                           by = c("State" = "GeoName"))
 
-write.csv(combined2024, file = "Processed/combined2024.csv")
+write.csv(combined2024, file = ".Data/Processed/combined2024.csv")
 
 ```
 
@@ -499,7 +499,7 @@ df_2024 <- combined2024 %>%
 
 #Merge data
 final_data <- bind_rows(df_2021, df_2022, df_2023, df_2024)
-write.csv(final_data, file = "Processed/final_data.csv")
+write.csv(final_data, file = ".Data/Processed/final_data.csv")
 ```
 
 # Rationale and Research Questions
