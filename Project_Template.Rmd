@@ -147,7 +147,7 @@ Investment_state_2021 <- Investment_state_2021 %>%
 
 #Disaster
 states_names <- data.frame(abbrev = states$STUSPS,
-                           state = states$NAME) 
+                           State = states$NAME) 
 #The disaster data set has only abbreviation for states, so full names need to be joined from other dataset.
 
 #summarize disaster count by state
