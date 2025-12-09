@@ -42,16 +42,16 @@ substring(census_processed$State, 2, nchar(census_processed))
 colnames(census_processed) <- c("State","2020","2021","2022","2023","2024")
 
 #Federal Energy and Environment investment data by county 
-Energy_investment<- read.csv("Energy_investment_by_county.csv", stringsAsFactors = T)
+Energy_investment<- read.csv(".Data/Energy_investment_by_county.csv", stringsAsFactors = T)
 
 #Federal Energy and Environment investment data by state 
-Investment_state <- read.csv("Raw/Federal energy and environment spending by STATE (2010-2025).csv", stringsAsFactors = T)
+Investment_state <- read.csv(".Data/Raw/Federal energy and environment spending by STATE (2010-2025).csv", stringsAsFactors = T)
 
 #Natural disaster data
-disasters <- read.csv("DisasterDeclarationsSummaries.csv", stringsAsFactors = T)
+disasters <- read.csv(".Data/DisasterDeclarationsSummaries.csv", stringsAsFactors = T)
 
 #spatial data
-states <- st_read("Spatial/cb_2018_us_state_20m.shp", stringsAsFactors = T)
+states <- st_read(".Data/Spatial/cb_2018_us_state_20m.shp", stringsAsFactors = T)
 
 
 census_2021 <- read.csv(".Data/Census/ACSSPP1Y2021.S0201-2025-11-29T154845.csv", stringsAsFactors = T)
