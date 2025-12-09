@@ -567,7 +567,7 @@ ggpairs(final_data, columns = cols, title = "",
 
 ## Question 2: What factors affect total federal energy and environment spending? 
 
-This study investigated the drivers of federal energy and environmental investment across U.S. states from 2021 to 2024, specifically examining the roles of environmental necessity (natural disasters) and political demand (public opinion).
+This section investigated the drivers of federal energy and environmental investment across U.S. states in 2021, specifically examining the roles of environmental necessity (natural disasters) and political demand (public opinion).
 
 ```{r message=FALSE, warning=FALSE}
 #Demographic Linear regression
@@ -577,9 +577,9 @@ log_combined2021<- combined2021%>%
          log_disaster=log(Disasters),
          log_EE_investment=log(TotalFedAction_EnergyEnv_2021))
 
-model <- lm(data = log_combined2021, log_EE_investment ~ log_pop + Female + child + `Median age (years)` + `Median household income (dollars)`  + Gas + Electricity, na.action = na.exclude)
+model_1 <- lm(data = log_combined2021, log_EE_investment ~ log_pop + Female + child + `Median age (years)` + `Median household income (dollars)`  + Gas + Electricity, na.action = na.exclude)
 summary(model)
-step(model)
+step(model_1)
 
 model_2 <- lm(data = log_combined2021, TotalFedAction_EnergyEnv_2021 ~ log_pop + child + `Median age (years)`  + Electricity)
 summary(model_2)
@@ -616,6 +616,13 @@ plot3 #plot2 is also an evidence showing why we log transformed the dataset
 
 ```
 
+In model 1 & 2, preliminary demographic analysis was conducted to identify baseline socio-economic drivers. The results indicated that Total Population (log_pop) is the dominant predictor of federal investment (p < 0.001), while median household income showed no significant effect. This necessitates including population as a key control variable in subsequent hypothesis testing to avoid omitted variable bias.
+
+In model 3, we tested whether disaster frequency alone predicts investment. The model showed a significant positive relationship (p < 0.001), initially supporting the hypothesis that funding is reactive. However, this simple model does not account for state size, raising the question of whether the funding is truly disaster-driven or merely proportional to population.
+
+Similarly, Model 4 examined the relationship between public opinion on climate change and federal investment. The results indicated a significant positive correlation (p < 0.05), suggesting that states with higher climate awareness tend to attract more funding.
+
+However, these models were limited by potential confounding factors (e.g., state size) and limited sample size (single year). To address this, we constructed a Final Integrated Model using integrated year data from 2021 to 2024.
 
 ## Question 3: Where is federal energy and environment spending being invested (i.e. where does the money go)?
 ```{r}
