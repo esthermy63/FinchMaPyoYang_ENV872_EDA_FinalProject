@@ -50,7 +50,6 @@ Investment_state <- read.csv("./Data/Raw/Federal energy and environment spending
 #Natural disaster data
 disasters <- read.csv("./Data/DisasterDeclarationsSummaries.csv", stringsAsFactors = T)
 
-
 #spatial data
 states <- st_read("./Data/Spatial/cb_2018_us_state_20m.shp", stringsAsFactors = T)
 
@@ -232,12 +231,12 @@ ggpairs(combined2021, columns = cols, title = "",
 
 # Analysis
 
-## Question 1: <insert specific question here and add additional subsections for additional questions below, if needed>
+## Question 1: How does federal energy and environment investment change from 2021 to 2024?
+```{r}
 
-## Question 2: 
+```
 
-
-
+## Question 2: What factors affect total federal energy and environment spending? 
 
 ```{r message=FALSE, warning=FALSE}
 #Demographic regression
@@ -285,6 +284,10 @@ plot3 #plot2 is also an evidence showing why we log transformed the dataset
 
 ```
 
+## Question 3: Where is federal energy and environment spending being invested (i.e. where does the money go)?
+```{r}
+
+```
 
 
 \newpage
