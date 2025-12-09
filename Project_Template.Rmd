@@ -35,14 +35,16 @@ theme_set(mytheme)
 ```{r}
 # Read in census data
 census_processed<- read.csv("Data/census_processed(2020-2024).csv", stringsAsFactors = T)
-census_processed<- read.csv("Data/census_processed(2020-2024).csv",stringsAsFactors = T)
+
 census_processed <- census_processed %>% 
   mutate(MEAN = rowMeans(across(X2020:X2024)))
 substring(census_processed$State, 2, nchar(census_processed))
 colnames(census_processed) <- c("State","2020","2021","2022","2023","2024")
 
-#Federal Energy and Environment investment data by county and state
+#Federal Energy and Environment investment data by county 
 Energy_investment<- read.csv("Data/Energy_investment_by_county.csv", stringsAsFactors = T)
+
+#Federal Energy and Environment investment data by state 
 Investment_state <- read.csv("./Data/Raw/Federal energy and environment spending by STATE (2010-2025).csv", stringsAsFactors = T)
 
 #Natural disaster data
@@ -53,11 +55,8 @@ disasters <- read.csv("./Data/DisasterDeclarationsSummaries.csv", stringsAsFacto
 states <- st_read("./Data/Spatial/cb_2018_us_state_20m.shp", stringsAsFactors = T)
 
 census_2021 <- read.csv("ACSSPP1Y2021.S0201-2025-11-29T154845.csv", stringsAsFactors = T)
-
 census_2022 <- read.csv("ACSSPP1Y2022.S0201-2025-11-29T154817.csv", stringsAsFactors = T)
-
 census_2023 <- read.csv("ACSSPP1Y2023.S0201-2025-11-29T154759.csv", stringsAsFactors = T)
-
 census_2024 <- read.csv("ACSSPP1Y2024.S0201-2025-11-29T154742.csv", stringsAsFactors = T)
 ```
 
@@ -195,7 +194,7 @@ Detail | Description
 ------------- | -------------
 Data Source  | THE FEDERAL ENERGY AND ENVIRONMENT INVESTMENT PROJECT
 Retrieved from  | https://www.pdx.edu/policy-consensus-center/federal-energy-environment-investment-project 
-Variables Used  | Total population, Male, Female, Median age, Median household income, Gas, Electricity, All other fuels, No fuel used, Year, State, Child (age 0-17)
+Variables Used  | Total population, Male, Female, Median age, Median household income, Gas, Electricity, All other fuels, No fuel used, Year, State, Child (age )
 Date Range  | 2021-2024
 
 Detail | Description
