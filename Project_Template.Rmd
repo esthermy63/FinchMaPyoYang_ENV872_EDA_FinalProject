@@ -233,7 +233,7 @@ ggpairs(combined2021, columns = cols, title = "",
 
 ## Question 1: How does federal energy and environment investment change from 2021 to 2024?
 ```{r}
-
+#time series analysis
 ```
 
 ## Question 2: What factors affect total federal energy and environment spending? 
