@@ -503,6 +503,9 @@ write.csv(final_data, file = "Processed/final_data.csv")
 ```
 
 # Rationale and Research Questions
+As the threats of climate change continue to grow, green investment becomes increasingly important to mitigate its effects. Our team is interested in the factors driving federal investments in the energy and environmental sectors and whether it has changed over time. To analyze this question, we are using a dataset from the Federal Energy and Environment Investment Project to look at patterns in federal grant and loan spending from 2021 to 2024.  
+
+We hypothesized that the frequency of natural disasters might draw more attention to investment into the energy and environmental sectors. Voter concern about climate change may also attract more federal investment. 
 
 1. How does federal energy and environment investment change from 2021 to 2024?
 2. What factors affect total federal energy and environment spending? 
