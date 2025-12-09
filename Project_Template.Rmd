@@ -53,6 +53,7 @@ disasters <- read.csv("./Data/DisasterDeclarationsSummaries.csv", stringsAsFacto
 #spatial data
 states <- st_read("./Data/Spatial/cb_2018_us_state_20m.shp", stringsAsFactors = T)
 
+
 census_2021 <- read.csv("ACSSPP1Y2021.S0201-2025-11-29T154845.csv", stringsAsFactors = T)
 census_2022 <- read.csv("ACSSPP1Y2022.S0201-2025-11-29T154817.csv", stringsAsFactors = T)
 census_2023 <- read.csv("ACSSPP1Y2023.S0201-2025-11-29T154759.csv", stringsAsFactors = T)
