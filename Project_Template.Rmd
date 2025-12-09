@@ -168,7 +168,7 @@ Regulate2021 <- Regulate %>%
 #Combining all the variables (Demographic, disaster and public awareness)
 combined2021 <- left_join(census2021clean, Investment_state_2021, by = c("State" = "stname"))
 
-combined2021 <- left_join(combined2021, disaster2021, by = c("State" = "state.y"))
+combined2021 <- left_join(combined2021, disaster2021, by = c("State" = "State"))
 
 combined2021 <- left_join(combined2021, Regulate2021, by = c("State" = "GeoName"))
 
