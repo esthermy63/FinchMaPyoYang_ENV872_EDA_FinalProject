@@ -65,8 +65,9 @@ census_2024 <- read.csv("Data/Census/ACSSPP1Y2024.S0201-2025-11-29T154742.csv", 
 ```{r}
 #Investment trend analysis
 
-Investment <- Investment_state %>%  #data for time series
+Investment <- Investment_state %>%
   select(
+    stname,
     "TotalFedAction_EnergyEnv_2010","TotalFedAction_2010",
     "TotalFedAction_EnergyEnv_2011","TotalFedAction_2011",
     "TotalFedAction_EnergyEnv_2012","TotalFedAction_2012",
@@ -81,9 +82,50 @@ Investment <- Investment_state %>%  #data for time series
     "TotalFedAction_EnergyEnv_2021","TotalFedAction_2021",
     "TotalFedAction_EnergyEnv_2022","TotalFedAction_2022",
     "TotalFedAction_EnergyEnv_2023","TotalFedAction_2023",
-    "TotalFedAction_EnergyEnv_2024","TotalFedAction_2024") %>% 
-  mutate(across(contains("FedAction"),
-                ~ as.numeric(str_replace_all(.x, "[\\$,]", "")))) 
+    "TotalFedAction_EnergyEnv_2024","TotalFedAction_2024"
+  ) %>%
+  mutate(across(contains("FedAction"), ~ as.numeric(str_replace_all(.x, "[\\$,]", ""))))
+
+Investment_long <- Investment %>%
+  pivot_longer(cols = -stname, names_to = "YearColumn", values_to = "Spending") %>%
+  mutate(
+    Year = as.integer(str_extract(YearColumn, "\\d{4}")),
+    Metric = if_else(str_detect(YearColumn, "EnergyEnv"), "EnergyEnv", "Total"),
+    State = stname
+  ) %>%
+  select(State, Year, Metric, Spending) %>%
+  arrange(State, Year, Metric)
+
+Investment_nat <- Investment_long %>%
+  group_by(Year, Metric) %>%
+  summarise(Spending = sum(Spending, na.rm = TRUE), .groups = "drop")
+
+Investment_ts <- Investment_nat %>%
+  filter(Metric == "EnergyEnv") %>%
+  select(Year, Spending) %>%
+  as_tsibble(index = Year)
+
+Investment_models <- Investment_ts %>%
+  model(
+    arima = ARIMA(Spending),
+    ets = ETS(Spending)
+  )
+
+Investment_fc <- Investment_models %>% forecast(h = 5)
+
+Investment_fc_tbl <- as_tibble(Investment_fc)
+
+p_ts <- ggplot(Investment_ts, aes(x = Year, y = Spending)) +
+  geom_line(size = 1) + geom_point() +
+  labs(x = "Year", y = "Spending", title = "National Investment (Energy & Environment)")
+
+p_fc <- autoplot(Investment_ts, Spending) +
+  autolayer(Investment_fc) +
+  labs(title = "5-year Forecast — Investment (Energy & Environment)")
+
+print(p_ts)
+print(p_fc)
+
   
 ```
 
