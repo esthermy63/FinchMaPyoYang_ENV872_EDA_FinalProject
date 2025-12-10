@@ -571,10 +571,17 @@ disaster_count <-disasters %>%
 
 disaster_count <- left_join(disaster_count, states_names, by = c("state" = "abbrev"))
 
+#remove territories
+disaster_count_clean <-disaster_count %>% 
+    filter(fipsStateCode %in% c(1:56)) 
+states_clean <-states %>% 
+    filter(GEOID != 72) 
+
+
 #join disaster to spatial data
-states_sf_join <- states %>%  
+states_sf_join <- states_clean %>%  
   left_join( 
-    disaster_count,  
+    disaster_count_clean,  
     by = c("NAME" = "State")  
     ) 
 
