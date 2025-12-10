@@ -23,6 +23,8 @@ library(mapview)
 library(leaflet)
 library("GGally")
 library(readxl)
+library(RColorBrewer)
+
 
 # Set theme
 mytheme <- theme_classic(base_size = 14) +
@@ -34,7 +36,7 @@ theme_set(mytheme)
 
 ```{r}
 # Read in census data
-census_processed<- read.csv(".Data/census_processed(2020-2024).csv", stringsAsFactors = T)
+census_processed<- read.csv("Data/census_processed(2020-2024).csv", stringsAsFactors = T)
 
 census_processed <- census_processed %>% 
   mutate(MEAN = rowMeans(across(X2020:X2024)))
@@ -42,22 +44,22 @@ substring(census_processed$State, 2, nchar(census_processed))
 colnames(census_processed) <- c("State","2020","2021","2022","2023","2024")
 
 #Federal Energy and Environment investment data by county 
-Energy_investment<- read.csv(".Data/Energy_investment_by_county.csv", stringsAsFactors = T)
+Energy_investment<- read.csv("Data/Energy_investment_by_county.csv", stringsAsFactors = T)
 
 #Federal Energy and Environment investment data by state 
-Investment_state <- read.csv(".Data/Raw/Federal energy and environment spending by STATE (2010-2025).csv", stringsAsFactors = T)
+Investment_state <- read.csv("Data/Raw/Federal energy and environment spending by STATE (2010-2025).csv", stringsAsFactors = T)
 
 #Natural disaster data
-disasters <- read.csv(".Data/DisasterDeclarationsSummaries.csv", stringsAsFactors = T)
+disasters <- read.csv("Data/DisasterDeclarationsSummaries.csv", stringsAsFactors = T)
 
 #spatial data
-states <- st_read(".Data/Spatial/cb_2018_us_state_20m.shp", stringsAsFactors = T)
+states <- st_read("Data/Spatial/cb_2018_us_state_20m.shp", stringsAsFactors = T)
 
 
-census_2021 <- read.csv(".Data/Census/ACSSPP1Y2021.S0201-2025-11-29T154845.csv", stringsAsFactors = T)
-census_2022 <- read.csv(".Data/Census/ACSSPP1Y2022.S0201-2025-11-29T154817.csv", stringsAsFactors = T)
-census_2023 <- read.csv(".Data/Census/ACSSPP1Y2023.S0201-2025-11-29T154759.csv", stringsAsFactors = T)
-census_2024 <- read.csv(".Data/Census/ACSSPP1Y2024.S0201-2025-11-29T154742.csv", stringsAsFactors = T)
+census_2021 <- read.csv("Data/Census/ACSSPP1Y2021.S0201-2025-11-29T154845.csv", stringsAsFactors = T)
+census_2022 <- read.csv("Data/Census/ACSSPP1Y2022.S0201-2025-11-29T154817.csv", stringsAsFactors = T)
+census_2023 <- read.csv("Data/Census/ACSSPP1Y2023.S0201-2025-11-29T154759.csv", stringsAsFactors = T)
+census_2024 <- read.csv("Data/Census/ACSSPP1Y2024.S0201-2025-11-29T154742.csv", stringsAsFactors = T)
 ```
 
 
@@ -160,7 +162,7 @@ disaster2021 <- disasters %>%
 disaster2021 <- left_join(disaster2021, states_names, by = c("state" = "abbrev"))
 
 #Public awareness
-Regulate <- read_excel("Regulate_percentage(2021~2024).xlsx")
+Regulate <- read_excel("Data/Regulate_percentage(2021~2024).xlsx")
 Regulate2021 <- Regulate %>% 
   select("GeoName","2021")
 
@@ -174,7 +176,7 @@ combined2021 <- left_join(combined2021, Regulate2021, by = c("State" = "GeoName"
 
 
 
-write.csv(combined2021, file = ".Data/Processed/combined2021.csv")
+write.csv(combined2021, file = "Data/Processed/combined2021.csv")
 ```
 
 ```{r}
@@ -265,7 +267,7 @@ disaster2022 <- disasters %>%
 disaster2022 <- left_join(disaster2022, states_names, by = c("state" = "abbrev"))
 
 #Public awareness
-Regulate <- read_excel("Regulate_percentage(2021~2024).xlsx")
+Regulate <- read_excel("Data/Regulate_percentage(2021~2024).xlsx")
 Regulate2022 <- Regulate %>% 
   select("GeoName","2022")
 
@@ -280,7 +282,7 @@ combined2022 <- left_join(combined2022, disaster2022,
 combined2022 <- left_join(combined2022, Regulate2022,
                           by = c("State" = "GeoName"))
 
-write.csv(combined2022, file = ".Data/Processed/combined2022.csv")
+write.csv(combined2022, file = "Data/Processed/combined2022.csv")
 
 ```
 
@@ -348,7 +350,7 @@ disaster2023 <- disasters %>%
 disaster2023 <- left_join(disaster2023, states_names, by = c("state" = "abbrev"))
 
 # Public awareness
-Regulate <- read_excel("Regulate_percentage(2021~2024).xlsx")
+Regulate <- read_excel("Data/Regulate_percentage(2021~2024).xlsx")
 Regulate2023 <- Regulate %>% 
   select("GeoName","2023")
 
@@ -363,7 +365,7 @@ combined2023 <- left_join(combined2023, disaster2023,
 combined2023 <- left_join(combined2023, Regulate2023,
                           by = c("State" = "GeoName"))
 
-write.csv(combined2023, file = ".Data/Processed/combined2023.csv")
+write.csv(combined2023, file = "Data/Processed/combined2023.csv")
 
 ```
 
@@ -431,7 +433,7 @@ disaster2024 <- disasters %>%
 disaster2024 <- left_join(disaster2024, states_names, by = c("state" = "abbrev"))
 
 # Public awareness
-Regulate <- read_excel("Regulate_percentage(2021~2024).xlsx")
+Regulate <- read_excel("Data/Regulate_percentage(2021~2024).xlsx")
 Regulate2024 <- Regulate %>% 
   select("GeoName","2024")
 
@@ -446,7 +448,7 @@ combined2024 <- left_join(combined2024, disaster2024,
 combined2024 <- left_join(combined2024, Regulate2024,
                           by = c("State" = "GeoName"))
 
-write.csv(combined2024, file = ".Data/Processed/combined2024.csv")
+write.csv(combined2024, file = "Data/Processed/combined2024.csv")
 
 ```
 
@@ -499,7 +501,7 @@ df_2024 <- combined2024 %>%
 
 #Merge data
 final_data <- bind_rows(df_2021, df_2022, df_2023, df_2024)
-write.csv(final_data, file = ".Data/Processed/final_data.csv")
+write.csv(final_data, file = "Data/Processed/final_data.csv")
 ```
 
 # Rationale and Research Questions
@@ -558,6 +560,35 @@ ggpairs(final_data, columns = cols, title = "",
 
 ```
 
+```{r}
+#visualize frequency of natural disasters 2021-2024
+#summarize count from 2021-2024
+disaster_count <-disasters %>% 
+  filter(fyDeclared %in% c(2021, 2022, 2023, 2024)) %>% 
+  arrange(state) %>% 
+  group_by(state, fipsStateCode) %>% 
+  summarise(Disasters = n())
+
+disaster_count <- left_join(disaster_count, states_names, by = c("state" = "abbrev"))
+
+#join disaster to spatial data
+states_sf_join <- states %>%  
+  left_join( 
+    disaster_count,  
+    by = c("NAME" = "State")  
+    ) 
+
+#View with mapview - count of disasters
+mapview(states_sf_join,  
+        zcol = 'Disasters', # colors by frequency
+        col.regions = rev(brewer.pal(11, "RdBu")))   #high count in red 
+
+#view with ggplot 
+ggplot() +  
+  geom_sf(data=states_sf_join,aes(fill = Disasters),alpha=0.5) +  
+  scale_fill_gradient2(low="blue",high="red",midpoint = 0.5) + #high count in red 
+  labs(fill='Disasters Frequency')
+```
 
 \newpage
 
