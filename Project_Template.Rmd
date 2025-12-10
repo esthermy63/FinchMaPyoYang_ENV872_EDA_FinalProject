@@ -63,7 +63,7 @@ census_2024 <- read.csv("Data/Census/ACSSPP1Y2024.S0201-2025-11-29T154742.csv", 
 ```
 
 ```{r}
-#Investemnt trend analysis
+#Investment trend analysis
 ## Energy dataset (State Level)
 Investment <- Investment_state %>%  #data for time series
   select(
