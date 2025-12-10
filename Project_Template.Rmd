@@ -580,14 +580,17 @@ states_sf_join <- states %>%
 
 #View with mapview - count of disasters
 mapview(states_sf_join,  
-        zcol = 'Disasters', # colors by frequency
-        col.regions = rev(brewer.pal(11, "RdBu")))   #high count in red 
+        zcol = 'Disasters', # colors by disaster count
+        col.regions = rev(brewer.pal(11, "RdBu"))) #high count in red 
 
 #view with ggplot 
 ggplot() +  
   geom_sf(data=states_sf_join,aes(fill = Disasters),alpha=0.5) +  
   scale_fill_gradient2(low="blue",high="red",midpoint = 0.5) + #high count in red 
-  labs(fill='Disasters Frequency')
+  labs(fill='Disasters Frequency',
+       title = "Disaster Frequency from 2021-2024")
+
+#Texas, Florida, and Louisiana have the highest declared disasters from 2021-2024
 ```
 
 \newpage
