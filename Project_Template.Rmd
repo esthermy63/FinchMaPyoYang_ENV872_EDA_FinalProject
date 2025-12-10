@@ -562,7 +562,7 @@ ggpairs(final_data, columns = cols, title = "",
 
 ```{r}
 #visualize frequency of natural disasters 2021-2024
-#summarize count from 2021-2024
+#summarize count 
 disaster_count <-disasters %>% 
   filter(fyDeclared %in% c(2021, 2022, 2023, 2024)) %>% 
   arrange(state) %>% 
@@ -584,6 +584,8 @@ states_sf_join <- states_clean %>%
     disaster_count_clean,  
     by = c("NAME" = "State")  
     ) 
+
+st_crs(states_sf_join) #NAD83, espg 4269
 
 #View with mapview - count of disasters
 mapview(states_sf_join,  
