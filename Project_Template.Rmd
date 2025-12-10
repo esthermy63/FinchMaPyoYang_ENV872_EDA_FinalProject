@@ -542,7 +542,7 @@ Date Range  | 2021-2024
 # Exploratory Analysis 
 
 ```{r}
-#create exploratory plot
+#examine the normal distribution of data
 cols <- c(3:12)
 
 ggpairs(final_data, columns = cols, title = "",  
