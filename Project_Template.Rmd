@@ -627,6 +627,36 @@ ggplot() +
 #Texas, Florida, and Louisiana have the highest declared disasters from 2021-2024
 ```
 
+```{r}
+#energy investment map 2021-2024
+
+Investment_21_24 <- Investment_state %>% 
+  select("STATEFP","stname","stusps",
+         "TotalFedAction_EnergyEnv_2021","TotalFedAction_EnergyEnv_2022", 'TotalFedAction_EnergyEnv_2023', 'TotalFedAction_EnergyEnv_2024')
+
+Investment_21_24$TotalFedAction_EnergyEnv_2021 <- 
+  as.numeric(gsub("[\\$, ]", "", Investment_21_24$TotalFedAction_EnergyEnv_2021)) 
+Investment_21_24$TotalFedAction_EnergyEnv_2022 <- 
+  as.numeric(gsub("[\\$, ]", "", Investment_21_24$TotalFedAction_EnergyEnv_2022))
+Investment_21_24$TotalFedAction_EnergyEnv_2023 <- 
+  as.numeric(gsub("[\\$, ]", "", Investment_21_24$TotalFedAction_EnergyEnv_2023))
+Investment_21_24$TotalFedAction_EnergyEnv_2024 <- 
+  as.numeric(gsub("[\\$, ]", "", Investment_21_24$TotalFedAction_EnergyEnv_2024))
+
+Investment_21_24_clean <- Investment_21_24 %>% mutate(
+    across(TotalFedAction_EnergyEnv_2021:TotalFedAction_EnergyEnv_2024)
+  ) %>%
+  mutate(
+    TotalFedAction_EnergyEnv_2021_2024 =
+      TotalFedAction_EnergyEnv_2021 +
+      TotalFedAction_EnergyEnv_2022 +
+      TotalFedAction_EnergyEnv_2023 +
+      TotalFedAction_EnergyEnv_2024
+  )
+
+
+```
+
 \newpage
 
 # Analysis
