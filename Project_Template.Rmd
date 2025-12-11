@@ -34,23 +34,23 @@ theme_set(mytheme)
 ```
 
 ```{r}
-#Federal Energy and Environment investment data by county 
-Energy_investment<- read.csv("Data/Energy_investment_by_county.csv", stringsAsFactors = T)
-
 #Federal Energy and Environment investment data by state 
 Investment_state <- read.csv("Data/Raw/Federal energy and environment spending by STATE (2010-2025).csv", stringsAsFactors = T)
 
 #Natural disaster data
-disasters <- read.csv("Data/DisasterDeclarationsSummaries.csv", stringsAsFactors = T)
+disasters <- read.csv("Data/Raw/DisasterDeclarationsSummaries.csv", stringsAsFactors = T)
 
 #spatial data
 states <- st_read("Data/Spatial/cb_2018_us_state_20m.shp", stringsAsFactors = T)
 
 # Read in census data
-census_2021 <- read.csv("Data/Census/ACSSPP1Y2021.S0201-2025-11-29T154845.csv", stringsAsFactors = T)
-census_2022 <- read.csv("Data/Census/ACSSPP1Y2022.S0201-2025-11-29T154817.csv", stringsAsFactors = T)
-census_2023 <- read.csv("Data/Census/ACSSPP1Y2023.S0201-2025-11-29T154759.csv", stringsAsFactors = T)
-census_2024 <- read.csv("Data/Census/ACSSPP1Y2024.S0201-2025-11-29T154742.csv", stringsAsFactors = T)
+census_2021 <- read.csv("Data/Raw/Census/ACSSPP1Y2021.S0201-2025-11-29T154845.csv", stringsAsFactors = T)
+census_2022 <- read.csv("Data/Raw/Census/ACSSPP1Y2022.S0201-2025-11-29T154817.csv", stringsAsFactors = T)
+census_2023 <- read.csv("Data/Raw/Census/ACSSPP1Y2023.S0201-2025-11-29T154759.csv", stringsAsFactors = T)
+census_2024 <- read.csv("Data/Raw/Census/ACSSPP1Y2024.S0201-2025-11-29T154742.csv", stringsAsFactors = T)
+
+#Regulate dataset
+Regulate <- read_excel("Data/Raw/Regulate_percentage(2021~2024).xlsx")
 ```
 
 
@@ -134,7 +134,6 @@ disaster2021 <- disasters %>%
 disaster2021 <- left_join(disaster2021, states_names, by = c("state" = "abbrev"))
 
 #Public awareness
-Regulate <- read_excel("Data/Regulate_percentage(2021~2024).xlsx")
 Regulate2021 <- Regulate %>% 
   select("GeoName","2021")
 
@@ -218,7 +217,6 @@ disaster2022 <- disasters %>%
 disaster2022 <- left_join(disaster2022, states_names, by = c("state" = "abbrev"))
 
 #Public awareness
-Regulate <- read_excel("Data/Regulate_percentage(2021~2024).xlsx")
 Regulate2022 <- Regulate %>% 
   select("GeoName","2022")
 
@@ -301,7 +299,6 @@ disaster2023 <- disasters %>%
 disaster2023 <- left_join(disaster2023, states_names, by = c("state" = "abbrev"))
 
 # Public awareness
-Regulate <- read_excel("Data/Regulate_percentage(2021~2024).xlsx")
 Regulate2023 <- Regulate %>% 
   select("GeoName","2023")
 
@@ -384,7 +381,6 @@ disaster2024 <- disasters %>%
 disaster2024 <- left_join(disaster2024, states_names, by = c("state" = "abbrev"))
 
 # Public awareness
-Regulate <- read_excel("Data/Regulate_percentage(2021~2024).xlsx")
 Regulate2024 <- Regulate %>% 
   select("GeoName","2024")
 
@@ -464,20 +460,19 @@ We hypothesized that the frequency of natural disasters might draw more attentio
 2. What factors affect total federal energy and environment spending? 
 3. Where is federal energy and environment spending being invested (i.e. where does the money go)?
 
-\newpage
-
-# Dataset Information
-```{r}
-summary(combined2021)
-summary(census2021clean)
-summary(Investment_state_2021)
-summary(final_data)
-```
+Data sets used for the study are listed as follow: 
 
 Detail | Description
 ------------- | -------------
-Data Source  | THE FEDERAL ENERGY AND ENVIRONMENT INVESTMENT PROJECT
+Data Source  | Portland State University - THE FEDERAL ENERGY AND ENVIRONMENT INVESTMENT PROJECT
 Retrieved from  | https://www.pdx.edu/policy-consensus-center/federal-energy-environment-investment-project 
+Variables Used  | State, All federal grants for a state in FY 2021 to 2024, Federal grants of energy and investment for a state in FY 2021 to 2024
+Date Range  | 2021-2024
+
+Detail | Description
+------------- | -------------
+Data Source  | United States Census Bureau
+Retrieved from  | https://www.census.gov/data/tables/time-series/demo/popest/2020s-state-total.html
 Variables Used  | Total population, Male, Female, Median age, Median household income, Gas, Electricity, All other fuels, No fuel used, Year, State, Child (age 0-17)
 Date Range  | 2021-2024
 
@@ -487,6 +482,31 @@ Data Source  | OpenFEMA Dataset: Disaster Declarations Summaries - v2
 Retrieved from  | https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2
 Variables Used  | State, Disaster Number
 Date Range  | 2021-2024
+
+Detail | Description
+------------- | -------------
+Data Source  | Yale Program on Climate Change Communication
+Retrieved from  | https://climatecommunication.yale.edu/visualizations-data/ycom-us/
+Variables Used  | State, Estimated % of adults who are somewhat or very worried about global warming
+Date Range  | 2021-2024
+
+Detail | Description
+------------- | -------------
+Data Source  | United States Census Bureau
+Retrieved from  | https://www2.census.gov/geo/tiger/GENZ2018/shp/cb_2018_us_state_20m.zip
+Variables Used  | State, Geometry
+Date Range  | 2018
+
+The data sets were processed and summarized using R.
+\newpage
+
+# Dataset Information
+```{r}
+summary(combined2021)
+summary(census2021clean)
+summary(Investment_state_2021)
+summary(final_data)
+```
 
 \newpage
 
