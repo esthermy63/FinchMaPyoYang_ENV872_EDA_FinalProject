@@ -2,6 +2,7 @@
 output: html_document
 editor_options: 
   chunk_output_type: console
+  
 ---
 \newpage
 \tableofcontents 
@@ -10,6 +11,8 @@ editor_options:
 \newpage
 \listoffigures 
 \newpage
+
+<body style="background-color:lightpink;">
 
 ```{r setup, include=FALSE}
 # Set your working directory
@@ -24,6 +27,7 @@ library(leaflet)
 library("GGally")
 library(readxl)
 library(RColorBrewer)
+library(knitr)
 
 # Set theme
 mytheme <- theme_classic(base_size = 14) +
@@ -33,7 +37,7 @@ theme_set(mytheme)
 
 ```
 
-```{r}
+```{r echo=FALSE, warning=FALSE}
 #Federal Energy and Environment investment data by state 
 Investment_state <- read.csv("Data/Raw/Federal energy and environment spending by STATE (2010-2025).csv", stringsAsFactors = T)
 
@@ -56,7 +60,7 @@ Regulate <- read_excel("Data/Raw/Regulate_percentage(2021~2024).xlsx")
 
 
 
-```{r}
+```{r echo=FALSE, warning=FALSE}
 #Data Wrangling (for 2021)
 ##Clean the data
 
@@ -150,7 +154,7 @@ combined2021 <- left_join(combined2021, Regulate2021, by = c("State" = "GeoName"
 write.csv(combined2021, file = "Data/Processed/combined2021.csv")
 ```
 
-```{r}
+```{r echo=FALSE, warning=FALSE}
 #Data Wrangling (for 2022)
 ##Clean the data
 
@@ -160,8 +164,8 @@ colnames(census2022) <- c(census2022[1,])
 census2022clean <- census2022[-1,]
 
 colnames(census2022clean) <- str_trim(colnames(census2022clean))
-
 rownames(census2022clean) <- str_sub(rownames(census2022clean), end = -29)
+census2022clean <- census2022clean[seq(1, nrow(census2022clean), by = 2),]
 
 census2022clean <- census2022clean %>% 
   select("Total population", "Male", "Female", "Under 5 years", "5 to 17 years",
@@ -235,7 +239,7 @@ write.csv(combined2022, file = "Data/Processed/combined2022.csv")
 
 ```
 
-```{r}
+```{r echo=FALSE, warning=FALSE}
 # Data Wrangling (for 2023)
 ## Clean the data
 
@@ -245,6 +249,7 @@ census2023clean <- census2023[-1,]
 
 colnames(census2023clean) <- str_trim(colnames(census2023clean))
 rownames(census2023clean) <- str_sub(rownames(census2023clean), end = -29)
+census2023clean <- census2023clean[seq(1, nrow(census2023clean), by = 2),]
 
 census2023clean <- census2023clean %>% 
   select("Total population", "Male", "Female", "Under 5 years", "5 to 17 years",
@@ -317,7 +322,7 @@ write.csv(combined2023, file = "Data/Processed/combined2023.csv")
 
 ```
 
-```{r}
+```{r echo=FALSE, warning=FALSE}
 # Data Wrangling (for 2024)
 ## Clean the data
 
@@ -327,6 +332,7 @@ census2024clean <- census2024[-1,]
 
 colnames(census2024clean) <- str_trim(colnames(census2024clean))
 rownames(census2024clean) <- str_sub(rownames(census2024clean), end = -29)
+census2024clean <- census2024clean[seq(1, nrow(census2024clean), by = 2),]
 
 census2024clean <- census2024clean %>% 
   select("Total population", "Male", "Female", "Under 5 years", "5 to 17 years",
@@ -399,7 +405,7 @@ write.csv(combined2024, file = "Data/Processed/combined2024.csv")
 
 ```
 
-```{r}
+```{r echo=FALSE}
 #Combine the four years
 #2021
 df_2021 <- combined2021 %>%
@@ -496,23 +502,101 @@ Data Source  | United States Census Bureau
 Retrieved from  | https://www2.census.gov/geo/tiger/GENZ2018/shp/cb_2018_us_state_20m.zip
 Variables Used  | State, Geometry
 Date Range  | 2018
-
-The data sets were processed and summarized using R.
 \newpage
 
 # Dataset Information
-```{r}
-summary(combined2021)
-summary(census2021clean)
-summary(Investment_state_2021)
-summary(final_data)
+We selected 12 variables of interest from different data sources, from demographic characteristics, disaster frequency, and percentage of public awareness of climate change.
+Each annual dataset was processed and summarized in R. For every year, the resulting dataset contains 51 observations and 12 variables (one row per state, plus D.C.).
+
+Below is an example summary output for the 2021 dataset:
+```{r echo=FALSE, warning=FALSE}
+#summary(df_2021)
+#summary(final_data)
+
+summary_2021mean <- df_2021 %>% 
+  select(-Year) %>% 
+  summarise(
+    across(where(is.numeric),
+           list(
+             Mean = ~mean(.x, na.rm = TRUE)
+           ),
+    .names = "{.col}"
+    )
+  ) 
+summary_2021mean <- as.data.frame(t(summary_2021mean))
+summary_2021SD <- df_2021 %>% 
+  select(-Year) %>% 
+  summarise(
+    across(where(is.numeric),
+           list(
+             SD = ~sd(.x, na.rm = TRUE)
+           ),
+    .names = "{.col}"
+    )
+  ) 
+summary_2021SD <- as.data.frame(t(summary_2021SD))
+
+summary_2021 <- cbind(summary_2021mean,summary_2021SD)
+colnames(summary_2021)<- c("Mean", "Standard Deviation")
+kable(summary_2021, caption = "Summary Table of 2021 Dataset", digits = 2)
+
+summary_finalmean <- final_data %>% 
+  select(-Year) %>% 
+  summarise(
+    across(where(is.numeric),
+           list(
+             Mean = ~mean(.x, na.rm = TRUE)
+           ),
+    .names = "{.col}"
+    )
+  ) 
+summary_finalmean <- as.data.frame(t(summary_finalmean))
+summary_finalSD <- final_data %>% 
+  select(-Year) %>% 
+  summarise(
+    across(where(is.numeric),
+           list(
+             SD = ~sd(.x, na.rm = TRUE)
+           ),
+    .names = "{.col}"
+    )
+  ) 
+summary_finalSD <- as.data.frame(t(summary_finalSD))
+summary_finalMax <- final_data %>% 
+  select(-Year) %>% 
+  summarise(
+    across(where(is.numeric),
+           list(
+             Max = ~max(.x, na.rm = TRUE)
+           ),
+    .names = "{.col}"
+    )
+  ) 
+summary_finalMax <- as.data.frame(t(summary_finalMax))
+summary_finalMin <- final_data %>% 
+  select(-Year) %>% 
+  summarise(
+    across(where(is.numeric),
+           list(
+             Min = ~min(.x, na.rm = TRUE)
+           ),
+    .names = "{.col}"
+    )
+  ) 
+summary_finalMin <- as.data.frame(t(summary_finalMin))
+
+summary_final <- cbind(summary_finalmean,summary_finalSD,summary_finalMax,summary_finalMin)
+colnames(summary_final)<- c("Mean", "Standard Deviation", "Max", "Min")
+kable(summary_final, caption = "Summary Table of Final Dataset", digits = 1)
+
 ```
 
+For further analysis, dataset from each year were bound by rows, producing a final dataset of 204 objects of 12 variables.
 \newpage
 
 # Exploratory Analysis 
 
-```{r}
+```{r echo=FALSE, warning=FALSE}
 #examine the normal distribution of data
 cols <- c(3:12)
 
@@ -528,7 +612,7 @@ ggpairs(final_data, columns = cols, title = "",
   )
 ```
 
-```{r}
+```{r echo=FALSE, warning=FALSE}
 #visualize frequency of natural disasters 2021-2024
 #summarize count 
 disaster_count <-disasters %>% 
