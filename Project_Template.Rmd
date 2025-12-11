@@ -1,8 +1,11 @@
 ---
+title: What Drives Energy and Environment Investment? A 2021-2024 Analytic Perspective
+author: E. Yang, Y. Ma, J. Pyo, M. Finch
+date: "`r Sys.Date()`"
 output: html_document
 editor_options: 
   chunk_output_type: console
-  
+toc: true
 ---
 \newpage
 \tableofcontents 
@@ -13,6 +16,8 @@ editor_options:
 \newpage
 
 <body style="background-color:lightblue;">
+
+*Github*: https://github.com/esthermy63/FinchMaPyoYang_ENV872_EDA_FinalProject.git
 
 ```{r setup, include=FALSE}
 # Set your working directory
