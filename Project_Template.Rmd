@@ -633,6 +633,7 @@ ggpairs(final_data, columns = cols, title = "",
   )
 ```
 
+
 ```{r echo=FALSE, warning=FALSE}
 #visualize frequency of natural disasters 2021-2024
 #summarize count 
@@ -676,6 +677,7 @@ ggplot() +
 
 #Texas, Florida, and Louisiana have the highest declared disasters from 2021-2024
 ```
+
 
 ```{r echo=FALSE, warning=FALSE}
 #energy investment map 2021-2024
@@ -820,21 +822,6 @@ summary(model_2)
 step(model_2)
 #Among all demographic variables, Total population, electricity and median age population are significantly related to energy and environment investment
 
-
-model_3 <- lm(data = log_combined2021, log_EE_investment ~  log_disaster, na.action = na.exclude)
-summary(model_3) #frequency of disaster is related
-
-model_4 <- lm(data = log_combined2021, log_EE_investment ~  `2021`, na.action = na.exclude)
-summary(model_4) # Public awareness is related
-
-
-plot1 <- ggplot(log_combined2021, aes(x=log_disaster, y = log_EE_investment))+
-  geom_point()+
-  geom_smooth(method = 'lm' )+
-  ylab("Logarithm of Energy and Environment Investment")+
-  xlab("Logarithm of the Frequency of Disasters across the US")
-plot1
-
 plot2 <- ggplot(log_combined2021, aes(x=`2021`, y = log_EE_investment))+
   geom_point()+
   geom_smooth(method = 'lm' )+
@@ -852,8 +839,27 @@ plot3 #plot2 is also an evidence showing why we log transformed the dataset
 
 In model 1 & 2, preliminary demographic analysis was conducted to identify baseline socio-economic drivers. The results indicated that Total Population (log_pop) is the dominant predictor of federal investment (p < 0.001), while median household income showed no significant effect. This necessitates including population as a key control variable in subsequent hypothesis testing to avoid omitted variable bias.
 
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+model_3 <- lm(data = log_combined2021, log_EE_investment ~  log_disaster, na.action = na.exclude)
+summary(model_3) #frequency of disaster is related
+```
+
+```{r}
+plot1 <- ggplot(log_combined2021, aes(x=log_disaster, y = log_EE_investment))+
+  geom_point()+
+  geom_smooth(method = 'lm' )+
+  ylab("Logarithm of Energy and Environment Investment")+
+  xlab("Logarithm of the Frequency of Disasters across the US")
+plot1
+```
+
+
 In model 3, we tested whether disaster frequency alone predicts investment. The model showed a significant positive relationship (p < 0.001), initially supporting the hypothesis that funding is reactive. However, this simple model does not account for state size, raising the question of whether the funding is truly disaster-driven or merely proportional to population.
 
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+model_4 <- lm(data = log_combined2021, log_EE_investment ~  `2021`, na.action = na.exclude)
+summary(model_4) # Public awareness is related
+```
 Similarly, Model 4 examined the relationship between public opinion on climate change and federal investment. The results indicated a significant positive correlation (p < 0.05), suggesting that states with higher climate awareness tend to attract more funding.
 
 However, these models were limited by potential confounding factors (e.g., state size) and limited sample size (single year). To address this, we constructed a Final Integrated Model using integrated year data from 2021 to 2024.
