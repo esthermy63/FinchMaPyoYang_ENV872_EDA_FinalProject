@@ -56,6 +56,14 @@ Marlon, J. R., Wang, X., Bergquist, P., Howe, P., Leiserowitz, A., Maibach, E., 
 
 <For each data file in the repository, describe the data contained in each column. Include the column name, a description of the information, the class of data, and any units associated with the data. Create a list or table for each data file.> 
 
+1. Federal energy and environment spending by state (2010-2025)
+Column Name | Description | Class | Unit
+------------- | -------------
+Column1 | 
+Column2  | 
+
+2.
+
 ## Scripts and code
 
 <list any software scripts/code contained in the repository and a description of their purpose.>
