@@ -600,7 +600,8 @@ disaster_count <- left_join(disaster_count, states_names, by = c("state" = "abbr
 disaster_count_clean <-disaster_count %>% 
     filter(fipsStateCode %in% c(1:56)) 
 states_clean <-states %>% 
-    filter(GEOID != 72) 
+    filter(GEOID != '72', GEOID != '02', GEOID != '15') 
+#note - removed alaska and hawaii for mapping purposes
 
 
 #join disaster to spatial data
@@ -622,7 +623,8 @@ ggplot() +
   geom_sf(data=states_sf_join,aes(fill = Disasters),alpha=0.5) +  
   scale_fill_gradient2(low="blue",high="red",midpoint = 0.5) + #high count in red 
   labs(fill='Disasters Frequency',
-       title = "Disaster Frequency from 2021-2024")
+       title = "Disaster Frequency from 2021-2024") +
+  theme(legend.position = "right")
 
 #Texas, Florida, and Louisiana have the highest declared disasters from 2021-2024
 ```
@@ -671,8 +673,9 @@ ggplot() +
   labs(fill='Investment',
        title = "Total Federal Energy and Environment Spending from 2021-2024") + 
   theme(legend.position = "right")
-
+#note - removed alaska and hawaii for mapping purposes
 #The highest spending is found in California, New York, and Texas
+
 ```
 
 \newpage
