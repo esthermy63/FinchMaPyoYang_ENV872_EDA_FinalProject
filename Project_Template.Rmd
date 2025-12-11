@@ -37,7 +37,7 @@ theme_set(mytheme)
 
 ```
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+```{r message=FALSE, warning=FALSE, include=FALSE}
 #Federal Energy and Environment investment data by state 
 Investment_state <- read.csv("Data/Raw/Federal energy and environment spending by STATE (2010-2025).csv", stringsAsFactors = T)
 
@@ -57,7 +57,7 @@ census_2024 <- read.csv("Data/Raw/Census/ACSSPP1Y2024.S0201-2025-11-29T154742.cs
 Regulate <- read_excel("Data/Raw/Regulate_percentage(2021~2024).xlsx")
 ```
 
-```{r echo=FALSE, warning=FALSE}
+```{r warning=FALSE, include=FALSE}
 #Data Wrangling (for 2021)
 ##Clean the data
 
@@ -151,7 +151,7 @@ combined2021 <- left_join(combined2021, Regulate2021, by = c("State" = "GeoName"
 write.csv(combined2021, file = "Data/Processed/combined2021.csv")
 ```
 
-```{r echo=FALSE, warning=FALSE}
+```{r warning=FALSE, include=FALSE}
 #Data Wrangling (for 2022)
 ##Clean the data
 
@@ -236,7 +236,7 @@ write.csv(combined2022, file = "Data/Processed/combined2022.csv")
 
 ```
 
-```{r echo=FALSE, warning=FALSE}
+```{r warning=FALSE, include=FALSE}
 # Data Wrangling (for 2023)
 ## Clean the data
 
@@ -319,7 +319,7 @@ write.csv(combined2023, file = "Data/Processed/combined2023.csv")
 
 ```
 
-```{r echo=FALSE, warning=FALSE}
+```{r warning=FALSE, include=FALSE}
 # Data Wrangling (for 2024)
 ## Clean the data
 
@@ -402,7 +402,7 @@ write.csv(combined2024, file = "Data/Processed/combined2024.csv")
 
 ```
 
-```{r echo=FALSE}
+```{r include=FALSE}
 #Combine the four years
 #2021
 df_2021 <- combined2021 %>%
@@ -675,7 +675,7 @@ ggplot() +
 #Texas, Florida, and Louisiana have the highest declared disasters from 2021-2024
 ```
 
-```{r}
+```{r echo=FALSE, warning=FALSE}
 #energy investment map 2021-2024
 #select investments from 2021-2024. 
 Investment_21_24 <- Investment_state %>% 
@@ -801,7 +801,7 @@ print(p_fc)
 
 This section investigated the drivers of federal energy and environmental investment across U.S. states in 2021, specifically examining the roles of environmental necessity (natural disasters) and political demand (public opinion).
 
-```{r message=FALSE, warning=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 #Demographic Linear regression
 #Some orginal data (eg. disaster) does not follow normal distribution, thus need to be log-transformed for linear regression.
 log_combined2021<- combined2021%>%
@@ -857,7 +857,7 @@ Similarly, Model 4 examined the relationship between public opinion on climate c
 However, these models were limited by potential confounding factors (e.g., state size) and limited sample size (single year). To address this, we constructed a Final Integrated Model using integrated year data from 2021 to 2024.
 
 ## Question 3: Where is federal energy and environment spending being invested (i.e. where does the money go)?
-```{r}
+```{r echo=FALSE, warning=FALSE}
 #This codes are for the merged (2021-2024) file analysis we can either choose analysis seperately or use model below!
 final_data <- final_data %>%
   mutate(
