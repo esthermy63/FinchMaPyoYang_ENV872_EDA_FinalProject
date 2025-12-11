@@ -25,7 +25,6 @@ library("GGally")
 library(readxl)
 library(RColorBrewer)
 
-
 # Set theme
 mytheme <- theme_classic(base_size = 14) +
   theme(axis.text = element_text(color = "black"), 
@@ -35,14 +34,6 @@ theme_set(mytheme)
 ```
 
 ```{r}
-# Read in census data
-census_processed<- read.csv("Data/census_processed(2020-2024).csv", stringsAsFactors = T)
-
-census_processed <- census_processed %>% 
-  mutate(MEAN = rowMeans(across(X2020:X2024)))
-substring(census_processed$State, 2, nchar(census_processed))
-colnames(census_processed) <- c("State","2020","2021","2022","2023","2024")
-
 #Federal Energy and Environment investment data by county 
 Energy_investment<- read.csv("Data/Energy_investment_by_county.csv", stringsAsFactors = T)
 
@@ -55,79 +46,14 @@ disasters <- read.csv("Data/DisasterDeclarationsSummaries.csv", stringsAsFactors
 #spatial data
 states <- st_read("Data/Spatial/cb_2018_us_state_20m.shp", stringsAsFactors = T)
 
-
+# Read in census data
 census_2021 <- read.csv("Data/Census/ACSSPP1Y2021.S0201-2025-11-29T154845.csv", stringsAsFactors = T)
 census_2022 <- read.csv("Data/Census/ACSSPP1Y2022.S0201-2025-11-29T154817.csv", stringsAsFactors = T)
 census_2023 <- read.csv("Data/Census/ACSSPP1Y2023.S0201-2025-11-29T154759.csv", stringsAsFactors = T)
 census_2024 <- read.csv("Data/Census/ACSSPP1Y2024.S0201-2025-11-29T154742.csv", stringsAsFactors = T)
 ```
 
-```{r}
-#Investment trend analysis
 
-Investment <- Investment_state %>%
-  select(
-    stname,
-    "TotalFedAction_EnergyEnv_2010","TotalFedAction_2010",
-    "TotalFedAction_EnergyEnv_2011","TotalFedAction_2011",
-    "TotalFedAction_EnergyEnv_2012","TotalFedAction_2012",
-    "TotalFedAction_EnergyEnv_2013","TotalFedAction_2013",
-    "TotalFedAction_EnergyEnv_2014","TotalFedAction_2014",
-    "TotalFedAction_EnergyEnv_2015","TotalFedAction_2015",
-    "TotalFedAction_EnergyEnv_2016","TotalFedAction_2016",
-    "TotalFedAction_EnergyEnv_2017","TotalFedAction_2017",
-    "TotalFedAction_EnergyEnv_2018","TotalFedAction_2018",
-    "TotalFedAction_EnergyEnv_2019","TotalFedAction_2019",
-    "TotalFedAction_EnergyEnv_2020","TotalFedAction_2020",
-    "TotalFedAction_EnergyEnv_2021","TotalFedAction_2021",
-    "TotalFedAction_EnergyEnv_2022","TotalFedAction_2022",
-    "TotalFedAction_EnergyEnv_2023","TotalFedAction_2023",
-    "TotalFedAction_EnergyEnv_2024","TotalFedAction_2024"
-  ) %>%
-  mutate(across(contains("FedAction"), ~ as.numeric(str_replace_all(.x, "[\\$,]", ""))))
-
-Investment_long <- Investment %>%
-  pivot_longer(cols = -stname, names_to = "YearColumn", values_to = "Spending") %>%
-  mutate(
-    Year = as.integer(str_extract(YearColumn, "\\d{4}")),
-    Metric = if_else(str_detect(YearColumn, "EnergyEnv"), "EnergyEnv", "Total"),
-    State = stname
-  ) %>%
-  select(State, Year, Metric, Spending) %>%
-  arrange(State, Year, Metric)
-
-Investment_nat <- Investment_long %>%
-  group_by(Year, Metric) %>%
-  summarise(Spending = sum(Spending, na.rm = TRUE), .groups = "drop")
-
-Investment_ts <- Investment_nat %>%
-  filter(Metric == "EnergyEnv") %>%
-  select(Year, Spending) %>%
-  as_tsibble(index = Year)
-
-Investment_models <- Investment_ts %>%
-  model(
-    arima = ARIMA(Spending),
-    ets = ETS(Spending)
-  )
-
-Investment_fc <- Investment_models %>% forecast(h = 5)
-
-Investment_fc_tbl <- as_tibble(Investment_fc)
-
-p_ts <- ggplot(Investment_ts, aes(x = Year, y = Spending)) +
-  geom_line(size = 1) + geom_point() +
-  labs(x = "Year", y = "Spending", title = "National Investment (Energy & Environment)")
-
-p_fc <- autoplot(Investment_ts, Spending) +
-  autolayer(Investment_fc) +
-  labs(title = "5-year Forecast — Investment (Energy & Environment)")
-
-print(p_ts)
-print(p_fc)
-
-  
-```
 
 
 ```{r}
@@ -580,9 +506,6 @@ ggpairs(final_data, columns = cols, title = "",
     strip.text.x = element_text(size = 5),  
     strip.text.y = element_text(size = 5)
   )
-
- 
-
 ```
 
 ```{r}
@@ -683,8 +606,72 @@ ggplot() +
 # Analysis
 
 ## Question 1: How does federal energy and environment investment change from 2021 to 2024?
-```{r}
+```{r eval=FALSE, include=FALSE}
 #time series analysis
+#Investment trend analysis
+
+Investment <- Investment_state %>%
+  select(
+    stname,
+    "TotalFedAction_EnergyEnv_2010","TotalFedAction_2010",
+    "TotalFedAction_EnergyEnv_2011","TotalFedAction_2011",
+    "TotalFedAction_EnergyEnv_2012","TotalFedAction_2012",
+    "TotalFedAction_EnergyEnv_2013","TotalFedAction_2013",
+    "TotalFedAction_EnergyEnv_2014","TotalFedAction_2014",
+    "TotalFedAction_EnergyEnv_2015","TotalFedAction_2015",
+    "TotalFedAction_EnergyEnv_2016","TotalFedAction_2016",
+    "TotalFedAction_EnergyEnv_2017","TotalFedAction_2017",
+    "TotalFedAction_EnergyEnv_2018","TotalFedAction_2018",
+    "TotalFedAction_EnergyEnv_2019","TotalFedAction_2019",
+    "TotalFedAction_EnergyEnv_2020","TotalFedAction_2020",
+    "TotalFedAction_EnergyEnv_2021","TotalFedAction_2021",
+    "TotalFedAction_EnergyEnv_2022","TotalFedAction_2022",
+    "TotalFedAction_EnergyEnv_2023","TotalFedAction_2023",
+    "TotalFedAction_EnergyEnv_2024","TotalFedAction_2024"
+  ) %>%
+  mutate(across(contains("FedAction"), ~ as.numeric(str_replace_all(.x, "[\\$,]", ""))))
+
+Investment_long <- Investment %>%
+  pivot_longer(cols = -stname, names_to = "YearColumn", values_to = "Spending") %>%
+  mutate(
+    Year = as.integer(str_extract(YearColumn, "\\d{4}")),
+    Metric = if_else(str_detect(YearColumn, "EnergyEnv"), "EnergyEnv", "Total"),
+    State = stname
+  ) %>%
+  select(State, Year, Metric, Spending) %>%
+  arrange(State, Year, Metric)
+
+Investment_nat <- Investment_long %>%
+  group_by(Year, Metric) %>%
+  summarise(Spending = sum(Spending, na.rm = TRUE), .groups = "drop")
+
+Investment_ts <- Investment_nat %>%
+  filter(Metric == "EnergyEnv") %>%
+  select(Year, Spending) %>%
+  as_tsibble(index = Year)
+
+Investment_models <- Investment_ts %>%
+  model(
+    arima = ARIMA(Spending),
+    ets = ETS(Spending)
+  )
+
+Investment_fc <- Investment_models %>% forecast(h = 5)
+
+Investment_fc_tbl <- as_tibble(Investment_fc)
+
+p_ts <- ggplot(Investment_ts, aes(x = Year, y = Spending)) +
+  geom_line(size = 1) + geom_point() +
+  labs(x = "Year", y = "Spending", title = "National Investment (Energy & Environment)")
+
+p_fc <- autoplot(Investment_ts, Spending) +
+  autolayer(Investment_fc) +
+  labs(title = "5-year Forecast — Investment (Energy & Environment)")
+
+print(p_ts)
+print(p_fc)
+
+  
 ```
 
 ## Question 2: What factors affect total federal energy and environment spending? 
@@ -700,7 +687,7 @@ log_combined2021<- combined2021%>%
          log_EE_investment=log(TotalFedAction_EnergyEnv_2021))
 
 model_1 <- lm(data = log_combined2021, log_EE_investment ~ log_pop + Female + child + `Median age (years)` + `Median household income (dollars)`  + Gas + Electricity, na.action = na.exclude)
-summary(model)
+summary(model_1)
 step(model_1)
 
 model_2 <- lm(data = log_combined2021, TotalFedAction_EnergyEnv_2021 ~ log_pop + child + `Median age (years)`  + Electricity)
@@ -762,7 +749,7 @@ final_model <- lm(data = final_data,
 summary(final_model)
 ```
 
-When analyzing the full panel data (2021-2024) and controlling for population size, the influence of disaster frequency (log_disaster) became statistically insignificant (p = 0.61). This contrasts with the preliminary analysis and suggests that the previously observed correlation between disasters and investment was largely driven by state size—larger states experience more disasters and receive more funding.
+When analyzing the full panel data (2021-2024) and controlling for population size, the influence of disaster frequency (log_disaster) became statistically insignificant (p = 0.61). This contrasts with the preliminary analysis and suggests that the previously observed correlation between disasters and investment was largely driven by state population experience more disasters and receive more funding.
 
 However, political pressure (Political_Score) remained a significant predictor (p < 0.05) even after controlling for population. This implies that states with a higher percentage of voters concerned about climate change actively attract more federal investment, independent of their size.
 
