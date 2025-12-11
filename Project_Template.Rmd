@@ -1,9 +1,11 @@
 ---
-title: What Drives Energy and Environment Investment? A 2021-2024 Analytic Perspective
-author: E. Yang, Y. Ma, J. Pyo, M. Finch
+title: "What Drives Energy and Environment Investment? A 2021-2024 Analytic Perspective"
+author: "E. Yang, Y. Ma, J. Pyo, M. Finch"
 date: "`r Sys.Date()`"
-output: html_document
-editor_options: 
+output:
+  pdf_document: default
+  html_document: default
+editor_options:
   chunk_output_type: console
 ---
 
@@ -617,7 +619,9 @@ For further analysis, dataset from each year were bound by rows, producing a fin
 
 ## Exploratory Analysis 
 
-```{r echo=FALSE, warning=FALSE}
+Prior to performing the regression analysis, we conducted an exploratory analysis by examining the distributional properties of our key variables. The Figure 1 indicates that both federal investment amounts and disaster frequencies exhibit a strong right-skewed distribution, with a few states having exceptionally high values compared to the majority. Such deviations from normality can violate the assumptions of Ordinary Least Squares (OLS) regression, potentially leading to heteroscedasticity and unreliable coefficient estimates. To solve this issue, we applied a logarithmic transformation to the investment (Total_EE_Investment), disaster (Disasters), and population (Total population) variables. This transformation stabilizes the variance and ensures the robustness of our statistical models.
+
+```{r echo=FALSE, warning=FALSE, fig.cap="figure 1: Scatter Plot"}
 #examine the normal distribution of data
 cols <- c(3:12)
 
@@ -821,20 +825,6 @@ model_2 <- lm(data = log_combined2021, TotalFedAction_EnergyEnv_2021 ~ log_pop +
 summary(model_2)
 step(model_2)
 #Among all demographic variables, Total population, electricity and median age population are significantly related to energy and environment investment
-
-plot2 <- ggplot(log_combined2021, aes(x=`2021`, y = log_EE_investment))+
-  geom_point()+
-  geom_smooth(method = 'lm' )+
-  ylab("Logarithm of Energy and Environment Investment")+
-  xlab("")
-plot2
-
-plot3 <- ggplot(combined2021, aes(x=Disasters, y = TotalFedAction_EnergyEnv_2021))+
-  geom_point()+
-  geom_smooth(method = 'lm')
-plot3 #plot2 is also an evidence showing why we log transformed the dataset
-
-
 ```
 
 In model 1 & 2, preliminary demographic analysis was conducted to identify baseline socio-economic drivers. The results indicated that Total Population (log_pop) is the dominant predictor of federal investment (p < 0.001), while median household income showed no significant effect. This necessitates including population as a key control variable in subsequent hypothesis testing to avoid omitted variable bias.
@@ -853,18 +843,29 @@ plot1 <- ggplot(log_combined2021, aes(x=log_disaster, y = log_EE_investment))+
 plot1
 ```
 
-
-In model 3, we tested whether disaster frequency alone predicts investment. The model showed a significant positive relationship (p < 0.001), initially supporting the hypothesis that funding is reactive. However, this simple model does not account for state size, raising the question of whether the funding is truly disaster-driven or merely proportional to population.
+Before constructing the final integrated model, we tested our hypotheses individually to understand the baseline relationships.
+In model 3, we tested whether disaster frequency alone predicts investment. The model showed a significant positive relationship (p < 0.001), initially supporting the hypothesis that funding is reactive. At first glance, this supports the "reactive funding" hypothesis. However, this model explains only a small portion of the variance $R^2 \approx 0.25), warning us that other critical factors (like population size) are missing.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 model_4 <- lm(data = log_combined2021, log_EE_investment ~  `2021`, na.action = na.exclude)
 summary(model_4) # Public awareness is related
 ```
-Similarly, Model 4 examined the relationship between public opinion on climate change and federal investment. The results indicated a significant positive correlation (p < 0.05), suggesting that states with higher climate awareness tend to attract more funding.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+plot2 <- ggplot(log_combined2021, aes(x=`2021`, y = log_EE_investment))+
+  geom_point()+
+  geom_smooth(method = 'lm' )+
+  ylab("Logarithm of Energy and Environment Investment")+
+  xlab("")
+plot2
+```
+
+Similarly, Model 4 examined the relationship between public opinion on climate change and federal investment. The results indicated a significant positive correlation (p < 0.05), suggesting that states with higher climate awareness tend to attract more funding.The positive coefficient indicates that a 1% increase in the climate-conscious voting base correlates with a measurable increase in federal funds. This supports the "proactive funding" hypothesis, where investment follows the demand for climate policy.
 
 However, these models were limited by potential confounding factors (e.g., state size) and limited sample size (single year). To address this, we constructed a Final Integrated Model using integrated year data from 2021 to 2024.
 
 ### Question 3: Where is federal energy and environment spending being invested (i.e. where does the money go)?
+The Final Integrated Model is crucial because it tests both drivers simultaneously while controlling for population. As the final results show, once we control for population, the "Disaster" effect disappears, but the "Political" effect remains—proving that political will is a true independent driver, whereas disaster funding is largely a function of state scale.
 ```{r echo=FALSE, warning=FALSE}
 #This codes are for the merged (2021-2024) file analysis we can either choose analysis seperately or use model below!
 final_data <- final_data %>%
