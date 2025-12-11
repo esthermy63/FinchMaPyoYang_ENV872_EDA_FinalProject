@@ -5,15 +5,10 @@ date: "`r Sys.Date()`"
 output: html_document
 editor_options: 
   chunk_output_type: console
-toc: true
 ---
-\newpage
-\tableofcontents 
-\newpage
+
 \listoftables 
-\newpage
 \listoffigures 
-\newpage
 
 <body style="background-color:lightblue;">
 
@@ -459,13 +454,15 @@ final_data <- bind_rows(df_2021, df_2022, df_2023, df_2024)
 write.csv(final_data, file = "Data/Processed/final_data.csv")
 ```
 
-# Rationale and Research Questions
+## Rationale and Research Questions
 As the threats of climate change continue to grow, green investment becomes increasingly important to mitigate its effects. Our team is interested in the factors driving federal investments in the energy and environmental sectors and whether it has changed over time. To analyze this question, we are using a dataset from the Federal Energy and Environment Investment Project to look at patterns in federal grant and loan spending from 2021 to 2024.  
 
 We hypothesized that the frequency of natural disasters might draw more attention to investment into the energy and environmental sectors. Voter concern about climate change may also attract more federal investment. 
 
 1. How does federal energy and environment investment change from 2021 to 2024?
+
 2. What factors affect total federal energy and environment spending? 
+
 3. Where is federal energy and environment spending being invested (i.e. where does the money go)?
 
 Data sets used for the study are listed as follow: 
@@ -506,7 +503,7 @@ Variables Used  | State, Geometry
 Date Range  | 2018
 \newpage
 
-# Dataset Information
+## Dataset Information
 We selected 12 variables of interest from different data sources, from demographic characteristics, disaster frequency, and percentage of public awareness of climate change.
 Each annual dataset was processed and summarized in R. For every year, the resulting dataset contains 51 observations and 12 variables (one row per state, plus D.C.).
 
@@ -618,7 +615,7 @@ kable(summary_final, caption = "Summary Table of Final Dataset", digits = 1)
 For further analysis, dataset from each year were bound by rows, producing a final dataset of 204 objects of 12 variables.
 \newpage
 
-# Exploratory Analysis 
+## Exploratory Analysis 
 
 ```{r echo=FALSE, warning=FALSE}
 #examine the normal distribution of data
@@ -731,9 +728,9 @@ ggplot() +
 
 \newpage
 
-# Analysis
+## Analysis
 
-## Question 1: How does federal energy and environment investment change from 2021 to 2024?
+### Question 1: How does federal energy and environment investment change from 2021 to 2024?
 ```{r eval=FALSE, include=FALSE}
 #time series analysis
 #Investment trend analysis
@@ -802,7 +799,7 @@ print(p_fc)
   
 ```
 
-## Question 2: What factors affect total federal energy and environment spending? 
+### Question 2: What factors affect total federal energy and environment spending? 
 
 This section investigated the drivers of federal energy and environmental investment across U.S. states in 2021, specifically examining the roles of environmental necessity (natural disasters) and political demand (public opinion).
 
@@ -861,7 +858,7 @@ Similarly, Model 4 examined the relationship between public opinion on climate c
 
 However, these models were limited by potential confounding factors (e.g., state size) and limited sample size (single year). To address this, we constructed a Final Integrated Model using integrated year data from 2021 to 2024.
 
-## Question 3: Where is federal energy and environment spending being invested (i.e. where does the money go)?
+### Question 3: Where is federal energy and environment spending being invested (i.e. where does the money go)?
 ```{r echo=FALSE, warning=FALSE}
 #This codes are for the merged (2021-2024) file analysis we can either choose analysis seperately or use model below!
 final_data <- final_data %>%
@@ -885,7 +882,7 @@ Furthermore, a temporal analysis reveals a significant surge in investment in 20
 
 \newpage
 
-# Summary and Conclusions
+## Summary and Conclusions
 1. Contrary to our initial hypothesis, natural disaster frequency is not a direct driver of federal investment when state size is taken into account.
 2. Political demand for climate action effectively influences the distribution of federal resources.
 
@@ -894,5 +891,5 @@ The allocation of federal energy and environmental funds is best described as de
 
 \newpage
 
-# References
+## References
 <add references here if relevant, otherwise delete this section> 
