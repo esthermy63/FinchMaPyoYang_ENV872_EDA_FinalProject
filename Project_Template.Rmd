@@ -12,7 +12,7 @@ editor_options:
 \listoffigures 
 \newpage
 
-<body style="background-color:lightpink;">
+<body style="background-color:lightblue;">
 
 ```{r setup, include=FALSE}
 # Set your working directory
@@ -37,7 +37,7 @@ theme_set(mytheme)
 
 ```
 
-```{r echo=FALSE, warning=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 #Federal Energy and Environment investment data by state 
 Investment_state <- read.csv("Data/Raw/Federal energy and environment spending by STATE (2010-2025).csv", stringsAsFactors = T)
 
@@ -56,9 +56,6 @@ census_2024 <- read.csv("Data/Raw/Census/ACSSPP1Y2024.S0201-2025-11-29T154742.cs
 #Regulate dataset
 Regulate <- read_excel("Data/Raw/Regulate_percentage(2021~2024).xlsx")
 ```
-
-
-
 
 ```{r echo=FALSE, warning=FALSE}
 #Data Wrangling (for 2021)
@@ -535,10 +532,32 @@ summary_2021SD <- df_2021 %>%
     )
   ) 
 summary_2021SD <- as.data.frame(t(summary_2021SD))
+summary_2021max <- df_2021 %>% 
+  select(-Year) %>% 
+  summarise(
+    across(where(is.numeric),
+           list(
+             Max = ~max(.x, na.rm = TRUE)
+           ),
+    .names = "{.col}"
+    )
+  ) 
+summary_2021max <- as.data.frame(t(summary_2021max))
+summary_2021min <- df_2021 %>% 
+  select(-Year) %>% 
+  summarise(
+    across(where(is.numeric),
+           list(
+             Min = ~min(.x, na.rm = TRUE)
+           ),
+    .names = "{.col}"
+    )
+  ) 
+summary_2021min <- as.data.frame(t(summary_2021min))
 
-summary_2021 <- cbind(summary_2021mean,summary_2021SD)
-colnames(summary_2021)<- c("Mean", "Standard Deviation")
-kable(summary_2021, caption = "Summary Table of 2021 Dataset", digits = 2)
+summary_2021 <- cbind(summary_2021mean,summary_2021SD,summary_2021max,summary_2021min)
+colnames(summary_2021)<- c("Mean", "Standard Deviation","Max","Min")
+kable(summary_2021, caption = "Summary Table of 2021 Dataset", digits = 1)
 
 summary_finalmean <- final_data %>% 
   select(-Year) %>% 
