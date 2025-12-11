@@ -59,12 +59,20 @@ Marlon, J. R., Wang, X., Bergquist, P., Howe, P., Leiserowitz, A., Maibach, E., 
 1. Federal energy and environment spending by state (2010-2025)
 
 Column Name | Description | Class | Unit
+
 ------------- | -------------
+
 Column1 | 
 Column2  | 
 
-2.
+2. Census data ACSSPP1Y2021.S0201-2025-11-29T154845.csv
 
+Column Name | Description | Class | Unit
+
+------------- | -------------
+
+Column1 | 
+Column2  | 
 ## Scripts and code
 
 <list any software scripts/code contained in the repository and a description of their purpose.>
