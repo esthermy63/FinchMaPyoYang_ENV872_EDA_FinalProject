@@ -1025,11 +1025,7 @@ tbl_regression(model_3) %>%
 plot2 <- ggplot(log_combined2021, aes(x=log_disaster, y = log_EE_investment))+
   geom_point()+
   geom_smooth(method = 'lm' )+
-<<<<<<< HEAD
-  ylab("Logarithm of Energy and \nEnvironment Investment")+
-=======
   ylab("Energy and Environment Investment")+
->>>>>>> a8ac1d7 (final draft)
   xlab(" % of people who are worried about climate change")
 plot2
 ```
