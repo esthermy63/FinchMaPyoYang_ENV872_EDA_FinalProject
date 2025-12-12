@@ -478,32 +478,32 @@ Our research questions are:
 
 Data sets used for the study are listed as follow: 
 
-Detail | Description
+Environment and Energy Investment Data | Description
 ------------- | -------------
 Data Source  | Portland State University - THE FEDERAL ENERGY AND ENVIRONMENT INVESTMENT PROJECT
 Retrieved from  | https://www.pdx.edu/policy-consensus-center/federal-energy-environment-investment-project 
-Variables Used  | State, All federal grants for a state in FY 2021 to 2024, Federal grants of energy and investment for a state in FY 2021 to 2024
+Variables Used  | All federal grants for a state in FY 2021 to 2024, Federal grants of energy and investment for a state in FY 2021 to 2024
 Date Range  | 2021-2024
 
-Detail | Description
+Demographic Data | Description
 ------------- | -------------
 Data Source  | United States Census Bureau
 Retrieved from  | https://www.census.gov/data/tables/time-series/demo/popest/2020s-state-total.html
-Variables Used  | Total population, Male, Female, Median age, Median household income, Gas, Electricity, All other fuels, No fuel used, Year, State, Child (age 0-17)
+Variables Used  | Total population, Male, Female, Median age, Median household income, Gas, Electricity, All other fuels, No fuel used, Year, Child (age 0-17)
 Date Range  | 2021-2024
 
-Detail | Description
+Disaster Frequency | Description
 ------------- | -------------
 Data Source  | OpenFEMA Dataset: Disaster Declarations Summaries - v2
 Retrieved from  | https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2
-Variables Used  | State, Disaster Number
+Variables Used  | Disasters
 Date Range  | 2021-2024
 
-Detail | Description
+Public Awareness on Climate Change | Description
 ------------- | -------------
 Data Source  | Yale Program on Climate Change Communication
 Retrieved from  | https://climatecommunication.yale.edu/visualizations-data/ycom-us/
-Variables Used  | State, Estimated % of adults who are somewhat or very worried about global warming
+Variables Used  | Estimated % of adults who are somewhat or very worried about global warming
 Date Range  | 2021-2024
 
 Detail | Description
@@ -517,6 +517,23 @@ Date Range  | 2018
 ## Dataset Information
 We selected 10 variables of interest from different data sources, from demographic characteristics, disaster frequency, and percentage of public awareness of climate change.
 Each annual dataset was processed and summarized in R. For every year, the resulting dataset contains 51 observations (one row per state, plus D.C.) and 12 columns (10 variables, state name and year).
+
+The main 12 columns include:
+
+Column Name | Unit | Description
+------------- | ------------- | ------------- |
+Total_EE_Investment | $ | Federal investment (grant and loans) on energy and environment
+Political Score  | % | % of adults who are somewhat or very worried about global warming
+Disasters  | Count | Number of declared disasters happened
+Total Population  | People | -
+Gender Ratio | % | Female / total population
+Child | % | % of people under 17 years old
+Median Age | Age | -
+Median Household Income| $ |-
+Gas | % | % of gas used in household
+Electricity | % |% of electricity used in household
+State |- | -
+Year |- |-
 
 Below is an example summary output for the 2021 dataset, and for further analysis, dataset from each year were bound by rows, producing a final dataset of 204 objects of 10 variables.
 ```{r echo=FALSE, warning=FALSE}
