@@ -1002,13 +1002,8 @@ tbl_regression(model_2) %>%
 plot1 <- ggplot(log_combined2021, aes(x=log_disaster, y = log_EE_investment))+
   geom_point()+
   geom_smooth(method = 'lm' )+
-<<<<<<< HEAD
-  ylab("Logarithm of Energy and \nEnvironment Investment")+
-  xlab("Logarithm of the Frequency of Disasters across the US")
-=======
   ylab("Energy and Environment Investment")+
   xlab("The Frequency of Disasters across the US")
->>>>>>> a8ac1d7 (final draft)
 plot1
 ```
 
