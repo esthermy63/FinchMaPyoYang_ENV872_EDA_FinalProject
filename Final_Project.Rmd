@@ -33,6 +33,8 @@ library(readxl)
 library(RColorBrewer)
 library(knitr)
 library(here)
+library(gtsummary)
+library(broom)
 
 # Set theme
 mytheme <- theme_classic(base_size = 14) +
@@ -878,7 +880,7 @@ States with the highest ratio of spending towards energy and environment program
 
 ### Question 1: How does federal energy and environment investment change from 2021 to 2024?
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, fig.cap="[figure 5: ARIMA forecast (5 years) - National EE Spending(2021-2024)]" }
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.cap="[figure 5: ARIMA forecast (5 years) - National EE Spending(2021-2024)]",fig.align='left' }
 #time series analysis
 #Investment trend analysis
 
@@ -937,32 +939,31 @@ p_ts <- ggplot(df_plot, aes(x = Year, y = Spending)) +
 print(p_ts)
 
 lm_fit <- lm(Spending ~ Year, data = df_plot)
-summary(lm_fit)
+tbl_regression(lm_fit) %>%
+  add_significance_stars()
 
 mk_result <- trend::mk.test(EE_ts)
-mk_result
-summary(mk_result)
 
-if (sum(!is.na(EE_ts)) >= 8) {
-  fit_arima <- forecast::auto.arima(EE_ts, seasonal = FALSE)
-  fcast <- forecast::forecast(fit_arima, h = 5)
-  print(fit_arima)
-  plot(fcast, main = "ARIMA forecast (5 years) - National EE Spending")
-} else {
-  message("Too few non-missing years for reliable ARIMA fitting/forecast.")
-}
+#if (sum(!is.na(EE_ts)) >= 8) {
+#  fit_arima <- forecast::auto.arima(EE_ts, seasonal = FALSE)
+#  fcast <- forecast::forecast(fit_arima, h = 5)
+#  print(fit_arima)
+#  plot(fcast, main = "ARIMA forecast (5 years) - National EE Spending")
+#} else {
+#  message("Too few non-missing years for reliable ARIMA fitting/forecast.")
+#}
 
-if (exists("fcast")) {
-  fcast_tbl <- tibble(
-    Year = (end_year + 1):(end_year + length(fcast$mean)),
-    Forecast = as.numeric(fcast$mean),
-    Lo80 = as.numeric(fcast$lower[ , "80%"]),
-    Hi80 = as.numeric(fcast$upper[ , "80%"]),
-    Lo95 = as.numeric(fcast$lower[ , "95%"]),
-    Hi95 = as.numeric(fcast$upper[ , "95%"])
-  )
-  print(fcast_tbl)
-}
+#if (exists("fcast")) {
+#  fcast_tbl <- tibble(
+#    Year = (end_year + 1):(end_year + length(fcast$mean)),
+#    Forecast = as.numeric(fcast$mean),
+#    Lo80 = as.numeric(fcast$lower[ , "80%"]),
+#    Hi80 = as.numeric(fcast$upper[ , "80%"]),
+#    Lo95 = as.numeric(fcast$lower[ , "95%"]),
+#    Hi95 = as.numeric(fcast$upper[ , "95%"])
+#  )
+#  print(fcast_tbl)
+#}
   
 ```
 
@@ -972,7 +973,7 @@ Federal energy and environment investment shows a significant upward trend from 
 
 This section investigated the drivers of federal energy and environmental investment across U.S. states in 2021, specifically examining the roles of environmental necessity (natural disasters) and political demand (public opinion).To establish a basis for our study, we first conducted a multivariable regression analysis to identify which socio-economic factors beyond just population—influence federal investment. We used AIC method to refine the model from income, gender, age, and fuel types to the most statistically relevant driver.
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE,fig.align='left'}
 #Demographic Linear regression
 #Some orginal data (eg. disaster) does not follow normal distribution, thus need to be log-transformed for linear regression.
 log_combined2021<- combined2021%>%
@@ -981,39 +982,54 @@ log_combined2021<- combined2021%>%
          log_EE_investment=log(TotalFedAction_EnergyEnv_2021))
 
 model_1 <- lm(data = log_combined2021, log_EE_investment ~ log_pop + Female + child + `Median age (years)` + `Median household income (dollars)`  + Gas + Electricity, na.action = na.exclude)
-summary(model_1)
-step(model_1)
+
+tbl_regression(model_1) %>%
+  add_significance_stars()
+#step(model_1)
 #Among all demographic variables, Total population, electricity and median age population are significantly related to energy and environment investment
+
 ```
 
 As expected, population was the most powerful predictor (t=17.33), explaining the vast majority of the variance in investment. This confirms that any subsequent analysis of disasters or politics must control population variable.Interestingly, Median Household Income was found to be statistically insignificant and was removed during the AIC process. This suggests that in 2021, federal energy and environmental funding was distributed relatively independently of a state's wealth.The Electricity (proportion of homes heated by electricity) and age-related variables (Median age, child) as significant or marginally significant predictors.
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE,fig.align='left'}
 model_2 <- lm(data = log_combined2021, log_EE_investment ~  log_disaster, na.action = na.exclude)
-summary(model_2) #frequency of disaster is related
+tbl_regression(model_2) %>%
+  add_significance_stars() #frequency of disaster is related
 ```
 
-```{r echo=FALSE, fig.cap="[figure 7:Correlation between Natural Disaster Frequency and Energy Investment]", message=FALSE, warning=FALSE}
+```{r echo=FALSE, fig.align='left',fig.cap="[figure 7:Correlation between Natural Disaster Frequency and Energy Investment]", message=FALSE, warning=FALSE}
 plot1 <- ggplot(log_combined2021, aes(x=log_disaster, y = log_EE_investment))+
   geom_point()+
   geom_smooth(method = 'lm' )+
+<<<<<<< HEAD
   ylab("Logarithm of Energy and \nEnvironment Investment")+
   xlab("Logarithm of the Frequency of Disasters across the US")
+=======
+  ylab("Energy and Environment Investment")+
+  xlab("The Frequency of Disasters across the US")
+>>>>>>> a8ac1d7 (final draft)
 plot1
 ```
 
 In Model 2, we tested whether disaster frequency alone predicts federal investment. The results indicated a statistically significant positive relationship (t = 3.616, p \< 0.001).Specifically, the coefficient of 0.24 suggests a 1% increase in disaster frequency is associated with approximately a 0.24% increase in federal investment. Furthermore, the model yielded an R-squared of 0.256, meaning that disaster frequency alone explains about 25.6% of the variance in funding allocation. While these initial findings support the hypothesis that funding is reactive to environmental needs, the low R-squared value also indicates that nearly 75% of the variation remains unexplained. This limitation, combined with the lack of demographic controls, raises the critical question of whether this correlation is truly causal or merely a reflection of population effect.
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
-model_3 <- lm(data = log_combined2021, log_EE_investment ~  `2021`, na.action = na.exclude)
-summary(model_3) # Public awareness is related
+```{r echo=FALSE, message=FALSE, warning=FALSE,fig.align='left'}
+model_3 <- lm(data = log_combined2021, log_EE_investment ~ log_disaster, na.action = na.exclude)
+# Public awareness is related
+tbl_regression(model_3) %>%
+  add_significance_stars()
 ```
 
-```{r echo=FALSE, message=FALSE, warning=FALSE,fig.cap="[figure 8:Public Awareness as a Determinant of Energy and Environmental Investment]"}
-plot2 <- ggplot(log_combined2021, aes(x=`2021`, y = log_EE_investment))+
+```{r echo=FALSE, fig.align='left',message=FALSE, warning=FALSE,fig.cap="[figure 8:Public Awareness as a Determinant of Energy and Environmental Investment]"}
+plot2 <- ggplot(log_combined2021, aes(x=log_disaster, y = log_EE_investment))+
   geom_point()+
   geom_smooth(method = 'lm' )+
+<<<<<<< HEAD
   ylab("Logarithm of Energy and \nEnvironment Investment")+
+=======
+  ylab("Energy and Environment Investment")+
+>>>>>>> a8ac1d7 (final draft)
   xlab(" % of people who are worried about climate change")
 plot2
 ```
@@ -1026,7 +1042,7 @@ However, these models were limited by potential confounding factors and limited 
 
 The Final Integrated Model is crucial because it tests both drivers simultaneously while controlling for population. As the final result indicates, once we control for population, the frequency of the disaster effect disappears, while the political effect remains. It shows that political will is a true independent driver, whereas disaster funding is largely a function of state population.
 
-```{r echo=FALSE, warning=FALSE}
+```{r echo=FALSE, warning=FALSE,fig.align='left'}
 #This codes are for the merged (2021-2024) file analysis we can either choose analysis seperately or use model below!
 final_data <- final_data %>%
   mutate(
@@ -1038,7 +1054,8 @@ final_data <- final_data %>%
 final_model <- lm(data = final_data, 
                   log_EE_investment ~ log_disaster + Political_Score + log_pop + as.factor(Year))
 
-summary(final_model)
+tbl_regression(final_model) %>%
+  add_significance_stars()
 ```
 
 When analyzing the final merged data set (2021-2024) and controlling for population size, the influence of disaster frequency (log_disaster) became statistically insignificant (p = 0.61). This contrasts with the prior analysis and suggests that the previously observed correlation between disasters and investment was largely driven by state population.
@@ -1049,10 +1066,18 @@ However, political pressure on environment(Political_Score) remained a significa
 
 ## Summary and Conclusions
 
-1.  Contrary to our initial hypothesis, natural disaster frequency is not a direct driver of federal investment when state size is taken into account.
-2.  Political demand for climate action effectively influences the distribution of federal resources.
+This study investigated the drivers of federal energy and environmental investment across U.S. states from 2021 to 2024 by integrating socio-economic data, disaster frequencies, and public opinion.
 
-The allocation of federal energy and environmental funds is best described as demographically scaled but politically responsive. While the baseline funding is determined by how many people live in a state, the variations above that baseline are significantly shaped by the political will of its voters, rather than the immediate frequency of natural disasters.
+#### Question 1: How does federal energy and environment investment change from 2021 to 2024?
+Our temporal analysis confirms a statistically significant increase in federal investment over the four-year period.The time series trend shows a consistent monotonic rise in spending, culminating in a notable surge in 2024. This trajectory reflects a structural expansion in federal support for energy and environmental initiatives, likely driven by the implementation of major policy frameworks.
+
+#### Question 2: What factors affect total federal energy and environment spending?
+The study establishes that population size is the dominant predictor of funding allocation.This suggests that federal funds are distributed broadly in proportion to the number of residents, rather than favoring wealthier states or targeting lower-income areas specifically based on income metrics.
+
+#### Question 3: Where is federal energy and environment spending being invested (i.e. where does the money go)?
+While initial bivariate analyses suggested that funding increases with natural disaster frequency, our final integrated model revealed this to be a spurious correlation driven by state size. Once population was controlled for, the influence of disasters became statistically insignificant. This implies that federal funding follows major population centers, which naturally experience higher aggregate disaster counts, rather than responding purely to the frequency of events. In contrast, political pressure (public awareness of climate change) remained a significant positive even after controlling the population variable. This confirms that political will acts as a true independent driver.
+
+In summary, the allocation of federal energy and environmental funds from 2021 to 2024 is best characterized as demographically scaled but politically responsive. While the foundational volume of investment is determined by population size, the strategic variations above this baseline are driven by the civic demand for climate action, rather than a direct reactive response to natural disaster frequency.
 
 \newpage
 
