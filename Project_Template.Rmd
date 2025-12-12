@@ -677,7 +677,8 @@ ggplot() +
   scale_fill_gradient2(low="blue",high="red",midpoint = 0.5) + #high count in red 
   labs(fill='Disasters Frequency',
        title = "Disaster Frequency from 2021-2024") +
-  theme(legend.position = "right")
+  theme(legend.position = "right") + 
+  theme_classic()
 
 #Texas, Florida, and Louisiana have the highest declared disasters from 2021-2024
 ```
@@ -719,14 +720,19 @@ investment_sf_join <- states_clean %>%
     by = c("STUSPS" = "stusps")  
     ) 
 
+#View with mapview - total energy investment 2021-2024
+mapview(investment_sf_join,  
+        zcol = 'TotalFedAction_EnergyEnv_2021_2024', # colors by spending
+        col.regions = rev(brewer.pal(11, "RdBu"))) #high spending in red 
 
 #view with ggplot 
 ggplot() +  
   geom_sf(data=investment_sf_join,aes(fill = TotalFedAction_EnergyEnv_2021_2024),alpha=0.5) +  
   scale_fill_gradient2(low="blue",high="red",midpoint = 0.5) + #high count in red 
   labs(fill='Investment',
-       title = "Total Federal Energy and Environment Spending from 2021-2024") + 
-  theme(legend.position = "right")
+       title = "Total Federal Energy and Environment\nSpending from 2021-2024") + #line break
+  theme(legend.position = "right") + 
+  theme_classic() #remove grid lines
 #note - removed alaska and hawaii for mapping purposes
 #The highest spending is found in California, New York, and Texas
 
