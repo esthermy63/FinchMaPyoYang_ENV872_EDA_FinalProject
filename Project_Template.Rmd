@@ -656,7 +656,7 @@ disaster_count_clean <-disaster_count %>%
     filter(fipsStateCode %in% c(1:56)) 
 states_clean <-states %>% 
     filter(GEOID != '72', GEOID != '02', GEOID != '15') 
-#note - removed alaska and hawaii for mapping purposes
+#note - also removed alaska and hawaii for mapping purposes
 
 
 #join disaster to spatial data
@@ -676,18 +676,18 @@ mapview(states_sf_join,
 #view with ggplot 
 ggplot() +  
   geom_sf(data=states_sf_join,aes(fill = Disasters),alpha=0.5) +  
-  scale_fill_gradient2(low="blue",high="red",midpoint = 0.5) + #high count in red 
+  scale_fill_gradient(low="lightyellow",high="red") + #high count in red 
   labs(fill='Disasters Frequency',
        title = "Disaster Frequency from 2021-2024") +
-  theme(legend.position = "right") + 
-  theme_classic()
+  theme(legend.position = "right")
 
 #Texas, Florida, and Louisiana have the highest declared disasters from 2021-2024
 ```
 
 
 ```{r echo=FALSE, warning=FALSE}
-#energy investment map 2021-2024
+#total federal energy/env investment map 2021-2024
+
 #select investments from 2021-2024. 
 Investment_21_24 <- Investment_state %>% 
   select("STATEFP","stname","stusps",
@@ -704,16 +704,13 @@ Investment_21_24$TotalFedAction_EnergyEnv_2024 <-
   as.numeric(gsub("[\\$, ]", "", Investment_21_24$TotalFedAction_EnergyEnv_2024))
 
 #find sum of investment across years
-Investment_21_24_clean <- Investment_21_24 %>% mutate(
-    across(TotalFedAction_EnergyEnv_2021:TotalFedAction_EnergyEnv_2024)
-  ) %>%
-  mutate(
-    TotalFedAction_EnergyEnv_2021_2024 =
+Investment_21_24_clean <- Investment_21_24 %>%
+  mutate(TotalFedAction_EnergyEnv_2021_2024 =
       TotalFedAction_EnergyEnv_2021 +
       TotalFedAction_EnergyEnv_2022 +
       TotalFedAction_EnergyEnv_2023 +
-      TotalFedAction_EnergyEnv_2024
-  )
+      TotalFedAction_EnergyEnv_2024) %>% 
+  select(stusps, TotalFedAction_EnergyEnv_2021_2024)
 
 #join investment to spatial data
 investment_sf_join <- states_clean %>%  
@@ -730,15 +727,62 @@ mapview(investment_sf_join,
 #view with ggplot 
 ggplot() +  
   geom_sf(data=investment_sf_join,aes(fill = TotalFedAction_EnergyEnv_2021_2024),alpha=0.5) +  
-  scale_fill_gradient2(low="blue",high="red",midpoint = 0.5) + #high count in red 
+  scale_fill_gradient(low="lightyellow",high="red") + #high count in red 
   labs(fill='Investment',
        title = "Total Federal Energy and Environment\nSpending from 2021-2024") + #line break
-  theme(legend.position = "right") + 
-  theme_classic() #remove grid lines
+  theme(legend.position = "right") 
+
 #note - removed alaska and hawaii for mapping purposes
 #The highest spending is found in California, New York, and Texas
 
 ```
+
+```{r}
+#ratio of Energy investment to Total spending map 2021-2024
+#select TOTAL spending from 2021-2024. 
+TotalFedAction_21_24 <- Investment_state %>% 
+  select("STATEFP","stname","stusps",
+         "TotalFedAction_2021", "TotalFedAction_2022",
+         "TotalFedAction_2023", "TotalFedAction_2024") %>% 
+  mutate(across(starts_with("TotalFedAction"), 
+                 ~as.numeric(gsub("[\\$, ]", "",.x))))  #clean table
+
+#find sum of total spending across years
+TotalFedAction_21_24_clean <- TotalFedAction_21_24 %>% 
+  mutate(TotalFedAction_2021_2024 =
+      TotalFedAction_2021 +
+      TotalFedAction_2022 +
+      TotalFedAction_2023 +
+      TotalFedAction_2024) %>% 
+  select(stusps, TotalFedAction_2021_2024)
+
+#Join TotalFedAction_2021_2024 to spatial data
+investment_sf_all <- investment_sf_join %>%
+  left_join(TotalFedAction_21_24_clean, by = c("STUSPS" = "stusps"))
+
+#calculate ratio column
+investment_sf_ratio <- investment_sf_all %>% 
+  mutate( 
+    Ratio = TotalFedAction_EnergyEnv_2021_2024 / TotalFedAction_2021_2024)
+
+
+#View with mapview - total energy investment 2021-2024
+mapview(investment_sf_ratio,  
+        zcol = 'Ratio', # colors by ratio of spending
+        col.regions = rev(brewer.pal(11, "RdBu"))) #high spending in red 
+
+#view with ggplot 
+ggplot() +  
+  geom_sf(data=investment_sf_ratio,aes(fill = Ratio),alpha=0.5) +  
+  scale_fill_gradient(low="lightyellow",high="red") + #high count in red 
+  labs(fill='Investment',
+       title = "Ratio of Federal Spending Invested \nin Energy and Environment 2021-2024") + #line break
+  theme(legend.position = "right") 
+
+#Out of the total federal spending, the states with the highest proportion towards Energy and Env are  DC, Wyoming, South Dakota
+
+```
+
 
 \newpage
 
