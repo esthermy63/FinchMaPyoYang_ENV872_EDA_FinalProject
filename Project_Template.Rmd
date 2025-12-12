@@ -800,6 +800,7 @@ California | $82,488,010,951
 New York  | $54,029,205,539
 Texas | $45,365,375,638
 
+California, New York, and Texas are among the highest populous states and are therefore expected to receive more federal investment. We next looked at the ratio of energy and environment spending compared to total federal spending across the US.  
 
 ```{r}
 #ratio of Energy investment to Total spending map 2021-2024
@@ -860,6 +861,14 @@ ggsave(
 
 ```
 
+States with the highest ratio of spending towards energy and environment programs are DC, Wyonming, South Dakota, and Montana. 
+
+State  | Federal energy and environment spending
+------------- | -------------
+District of Columbia | 0.14
+Wyoming  | 0.13
+South Dakota | 0.12
+Montanta | 0.11
 
 \newpage
 
