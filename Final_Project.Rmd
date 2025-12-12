@@ -533,8 +533,8 @@ The main 12 columns include:
 | Child                   | \%     | \% of people under 17 years old                                    |
 | Median Age              | Age    | \-                                                                 |
 | Median Household Income | \$     | \-                                                                 |
-| Gas                     | \%     | \% of gas used in household                                        |
-| Electricity             | \%     | \% of electricity used in household                                |
+| Gas                     | \%     | \% of the people use gas as a heating fuel                                       |
+| Electricity             | \%     | \% of people use electricity as a heating fuel                                |
 | State                   | \-     | \-                                                                 |
 | Year                    | \-     | \-                                                                 |
 
