@@ -932,7 +932,7 @@ p_ts <- ggplot(df_plot, aes(x = Year, y = Spending)) +
   geom_point() +
   geom_line(aes(y = Trend), color = "red", linetype = "dashed") +
   labs(x = "Year", y = "National Energy & Environment Spending",
-       title = "Annual National Investment (Energy & Environment): observed + linear trend") +
+       title = "Annual National Investment (Energy & Environment): \nobserved + linear trend") +
   theme_minimal()
 print(p_ts)
 
@@ -997,7 +997,7 @@ summary(model_2) #frequency of disaster is related
 plot1 <- ggplot(log_combined2021, aes(x=log_disaster, y = log_EE_investment))+
   geom_point()+
   geom_smooth(method = 'lm' )+
-  ylab("Logarithm of Energy and Environment Investment")+
+  ylab("Logarithm of Energy and \nEnvironment Investment")+
   xlab("Logarithm of the Frequency of Disasters across the US")
 plot1
 ```
@@ -1013,7 +1013,7 @@ summary(model_3) # Public awareness is related
 plot2 <- ggplot(log_combined2021, aes(x=`2021`, y = log_EE_investment))+
   geom_point()+
   geom_smooth(method = 'lm' )+
-  ylab("Logarithm of Energy and Environment Investment")+
+  ylab("Logarithm of Energy and \nEnvironment Investment")+
   xlab(" % of people who are worried about climate change")
 plot2
 ```
