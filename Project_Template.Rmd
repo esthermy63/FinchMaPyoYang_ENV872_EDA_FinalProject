@@ -2,17 +2,11 @@
 title: "What Drives Energy and Environment Investment? A 2021-2024 Analytic Perspective"
 author: "E. Yang, Y. Ma, J. Pyo, M. Finch"
 date: "`r Sys.Date()`"
-<<<<<<< HEAD
 output: 
   html_document:
   toc: true
   toc_depth: 3
 
-=======
-output:
-  html_document: default
-  pdf_document: default
->>>>>>> 67adb5b (analysis)
 editor_options:
   chunk_output_type: console
 
@@ -902,7 +896,7 @@ In Model 2, we tested whether disaster frequency alone predicts federal investme
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 model_3 <- lm(data = log_combined2021, log_EE_investment ~  `2021`, na.action = na.exclude)
-summary(model_4) # Public awareness is related
+summary(model_3) # Public awareness is related
 ```
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
