@@ -6,7 +6,6 @@ output:
   html_document:
   toc: true
   toc_depth: 3
-
 editor_options:
   chunk_output_type: console
 ---
@@ -37,7 +36,7 @@ library(here)
 
 # Set theme
 mytheme <- theme_classic(base_size = 14) +
-  theme(axis.text = element_text(color = "black"), 
+  theme(axis.text = element_text(color = "black", size = 9), 
         legend.position = "top")
 theme_set(mytheme)
 
@@ -668,7 +667,7 @@ ggpairs(final_data, columns = cols, title = "",
 
 As part of our exploration on factors driving investment, we looked at where the most natural disasters occur. If climate disasters influence investment behavior, we might expect that the states with the highest frequency of disasters to also have the greatest federal investments in the energy and environment sectors.
 
-```{r echo=FALSE, warning=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.cap="[figure 2: Frequency of Natural Disasters(2021-2024)]"}
 #visualize frequency of natural disasters 2021-2024
 #summarize count 
 disaster_count <-disasters %>% 
@@ -728,7 +727,7 @@ The map shows that Texas (n=699), Florida (n=660), and Louisiana (n=650) have th
 
 Next, we looked at the states that received the most federal grants and loans towards energy and environment.
 
-```{r echo=FALSE, warning=FALSE}
+```{r echo=FALSE, warning=FALSE, fig.cap="[figure 3: Total Energy and Environment Investment Map by States(2021-2024)]"}
 #total federal energy/env investment map 2021-2024
 
 #select investments from 2021-2024. 
@@ -805,8 +804,8 @@ The highest federal energy and environment investments from 2021 to 2024 were in
 
 California, New York, and Texas are among the highest populous states and are therefore expected to receive more federal investment. We next looked at the ratio of energy and environment spending compared to total federal spending across the US.
 
-```{r echo=FALSE, warning=FALSE}
-#ratio of Energy investment to Total spending map 2021-2024
+```{r echo=FALSE, warning=FALSE, fig.cap="[figure 4: Ratio of Energy and Environment Investment to Total State Budget Map(2021-2024)]"}
+#Ratio of Energy investment to Total spending map 2021-2024
 #select TOTAL spending from 2021-2024. 
 TotalFedAction_21_24 <- Investment_state %>% 
   select("STATEFP","stname","stusps",
@@ -879,7 +878,7 @@ States with the highest ratio of spending towards energy and environment program
 
 ### Question 1: How does federal energy and environment investment change from 2021 to 2024?
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.cap="[figure 5: ARIMA forecast (5 years) - National EE Spending(2021-2024)]" }
 #time series analysis
 #Investment trend analysis
 
@@ -994,7 +993,7 @@ model_2 <- lm(data = log_combined2021, log_EE_investment ~  log_disaster, na.act
 summary(model_2) #frequency of disaster is related
 ```
 
-```{r}
+```{r echo=FALSE, fig.cap="[figure 7:Correlation between Natural Disaster Frequency and Energy Investment]", message=FALSE, warning=FALSE}
 plot1 <- ggplot(log_combined2021, aes(x=log_disaster, y = log_EE_investment))+
   geom_point()+
   geom_smooth(method = 'lm' )+
@@ -1010,7 +1009,7 @@ model_3 <- lm(data = log_combined2021, log_EE_investment ~  `2021`, na.action = 
 summary(model_3) # Public awareness is related
 ```
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE,fig.cap="[figure 8:Public Awareness as a Determinant of Energy and Environmental Investment]"}
 plot2 <- ggplot(log_combined2021, aes(x=`2021`, y = log_EE_investment))+
   geom_point()+
   geom_smooth(method = 'lm' )+
@@ -1044,7 +1043,7 @@ summary(final_model)
 
 When analyzing the final merged data set (2021-2024) and controlling for population size, the influence of disaster frequency (log_disaster) became statistically insignificant (p = 0.61). This contrasts with the prior analysis and suggests that the previously observed correlation between disasters and investment was largely driven by state population.
 
-However, political pressure on environment(Political_Score) remained a significant predictor (p \< 0.05) even after controlling for population. This implies that states with a higher percentage of voters concerned about climate change actively attract more federal investment, independent of their population.
+However, political pressure on environment(Political_Score) remained a significant predictor (p < 0.05) even after controlling for population. This implies that states with a higher percentage of voters concerned about climate change actively attract more federal investment, independent of their population.
 
 \newpage
 
