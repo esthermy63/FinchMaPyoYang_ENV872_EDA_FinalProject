@@ -9,15 +9,15 @@ output:
 
 editor_options:
   chunk_output_type: console
-
 ---
 
+```{=tex}
 \listoftables 
-\listoffigures 
-
+\listoffigures
+```
 <body style="background-color:lightblue;">
 
-*Github*: https://github.com/esthermy63/FinchMaPyoYang_ENV872_EDA_FinalProject.git
+*Github*: <https://github.com/esthermy63/FinchMaPyoYang_ENV872_EDA_FinalProject.git>
 
 ```{r setup, include=FALSE}
 # Set your working directory
@@ -461,6 +461,7 @@ write.csv(final_data, file = "Data/Processed/final_data.csv")
 ```
 
 ## Rationale and Research Questions
+
 As climate change continues to intensify, federal investment in energy and environmental programs has become an important part of how states manage climate risks and build resilience. However, it is still not very clear what influences changes in this type of federal spending or why certain states receive more support than others. Understanding these patterns matters for environmental management because federal resources strongly affect a state’s ability to respond to climate impacts and plan for long term sustainability.
 
 Recent research also shows that climate risks may influence financial decision making. For example, Marshall et al. (2021) find that climate disasters such as hurricanes or floods increase public attention to environmental issues and lead to greater investment in green financial products. They describe this as a salience effect, meaning that when climate risks become more visible, people are more willing to direct their attention and money toward environmental solutions. This idea raises an important question for our study. If climate disasters shape private investment behavior, it is reasonable to ask whether they may also influence decisions about federal energy and environmental spending.
@@ -471,72 +472,74 @@ For these reasons, our project examines federal energy and environment investmen
 
 Our research questions are:
 
-1. How does federal energy and environment investment change from 2021 to 2024?
+1.  How does federal energy and environment investment change from 2021 to 2024?
 
-2. What factors affect total federal energy and environment spending? 
+2.  What factors affect total federal energy and environment spending?
 
-3. Where is federal energy and environment spending being invested (i.e. where does the money go)?
+3.  Where is federal energy and environment spending being invested (i.e. where does the money go)?
 
-Data sets used for the study are listed as follow: 
+Data sets used for the study are listed as follow:
 
-Environment and Energy Investment Data | Description
-------------- | -------------
-Data Source  | Portland State University - THE FEDERAL ENERGY AND ENVIRONMENT INVESTMENT PROJECT
-Retrieved from  | https://www.pdx.edu/policy-consensus-center/federal-energy-environment-investment-project 
-Variables Used  | All federal grants for a state in FY 2021 to 2024, Federal grants of energy and investment for a state in FY 2021 to 2024
-Date Range  | 2021-2024
+| Environment and Energy Investment Data | Description                                                                                                               |
+|------------------------------------|------------------------------------|
+| Data Source                            | Portland State University - THE FEDERAL ENERGY AND ENVIRONMENT INVESTMENT PROJECT                                         |
+| Retrieved from                         | <https://www.pdx.edu/policy-consensus-center/federal-energy-environment-investment-project>                               |
+| Variables Used                         | All federal grants for a state in FY 2021 to 2024, Federal grants of energy and investment for a state in FY 2021 to 2024 |
+| Date Range                             | 2021-2024                                                                                                                 |
 
-Demographic Data | Description
-------------- | -------------
-Data Source  | United States Census Bureau
-Retrieved from  | https://www.census.gov/data/tables/time-series/demo/popest/2020s-state-total.html
-Variables Used  | Total population, Male, Female, Median age, Median household income, Gas, Electricity, All other fuels, No fuel used, Year, Child (age 0-17)
-Date Range  | 2021-2024
+| Demographic Data | Description                                                                                                                                  |
+|------------------------------------|------------------------------------|
+| Data Source      | United States Census Bureau                                                                                                                  |
+| Retrieved from   | <https://www.census.gov/data/tables/time-series/demo/popest/2020s-state-total.html>                                                          |
+| Variables Used   | Total population, Male, Female, Median age, Median household income, Gas, Electricity, All other fuels, No fuel used, Year, Child (age 0-17) |
+| Date Range       | 2021-2024                                                                                                                                    |
 
-Disaster Frequency | Description
-------------- | -------------
-Data Source  | OpenFEMA Dataset: Disaster Declarations Summaries - v2
-Retrieved from  | https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2
-Variables Used  | Disasters
-Date Range  | 2021-2024
+| Disaster Frequency | Description                                                                  |
+|------------------------------------|------------------------------------|
+| Data Source        | OpenFEMA Dataset: Disaster Declarations Summaries - v2                       |
+| Retrieved from     | <https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2> |
+| Variables Used     | Disasters                                                                    |
+| Date Range         | 2021-2024                                                                    |
 
-Public Awareness on Climate Change | Description
-------------- | -------------
-Data Source  | Yale Program on Climate Change Communication
-Retrieved from  | https://climatecommunication.yale.edu/visualizations-data/ycom-us/
-Variables Used  | Estimated % of adults who are somewhat or very worried about global warming
-Date Range  | 2021-2024
+| Public Awareness on Climate Change | Description                                                                 |
+|------------------------------------|------------------------------------|
+| Data Source                        | Yale Program on Climate Change Communication                                |
+| Retrieved from                     | <https://climatecommunication.yale.edu/visualizations-data/ycom-us/>        |
+| Variables Used                     | Estimated % of adults who are somewhat or very worried about global warming |
+| Date Range                         | 2021-2024                                                                   |
 
-Detail | Description
-------------- | -------------
-Data Source  | United States Census Bureau
-Retrieved from  | https://www2.census.gov/geo/tiger/GENZ2018/shp/cb_2018_us_state_20m.zip
-Variables Used  | State, Geometry
-Date Range  | 2018
+| Detail         | Description                                                               |
+|------------------------------------|------------------------------------|
+| Data Source    | United States Census Bureau                                               |
+| Retrieved from | <https://www2.census.gov/geo/tiger/GENZ2018/shp/cb_2018_us_state_20m.zip> |
+| Variables Used | State, Geometry                                                           |
+| Date Range     | 2018                                                                      |
+
 \newpage
 
 ## Dataset Information
-We selected 10 variables of interest from different data sources, from demographic characteristics, disaster frequency, and percentage of public awareness of climate change.
-Each annual dataset was processed and summarized in R. For every year, the resulting dataset contains 51 observations (one row per state, plus D.C.) and 12 columns (10 variables, state name and year).
+
+We selected 10 variables of interest from different data sources, from demographic characteristics, disaster frequency, and percentage of public awareness of climate change. Each annual dataset was processed and summarized in R. For every year, the resulting dataset contains 51 observations (one row per state, plus D.C.) and 12 columns (10 variables, state name and year).
 
 The main 12 columns include:
 
-Column Name | Unit | Description
-------------- | ------------- | ------------- |
-Total_EE_Investment | $ | Federal investment (grant and loans) on energy and environment
-Political Score  | % | % of adults who are somewhat or very worried about global warming
-Disasters  | Count | Number of declared disasters happened
-Total Population  | People | -
-Gender Ratio | % | Female / total population
-Child | % | % of people under 17 years old
-Median Age | Age | -
-Median Household Income| $ |-
-Gas | % | % of gas used in household
-Electricity | % |% of electricity used in household
-State |- | -
-Year |- |-
+| Column Name             | Unit   | Description                                                        |
+|------------------------|------------------------|------------------------|
+| Total_EE_Investment     | \$     | Federal investment (grant and loans) on energy and environment     |
+| Political Score         | \%     | \% of adults who are somewhat or very worried about global warming |
+| Disasters               | Count  | Number of declared disasters happened                              |
+| Total Population        | People | \-                                                                 |
+| Gender Ratio            | \%     | Female / total population                                          |
+| Child                   | \%     | \% of people under 17 years old                                    |
+| Median Age              | Age    | \-                                                                 |
+| Median Household Income | \$     | \-                                                                 |
+| Gas                     | \%     | \% of gas used in household                                        |
+| Electricity             | \%     | \% of electricity used in household                                |
+| State                   | \-     | \-                                                                 |
+| Year                    | \-     | \-                                                                 |
 
 Below is an example summary output for the 2021 dataset, and for further analysis, dataset from each year were bound by rows, producing a final dataset of 204 objects of 10 variables.
+
 ```{r echo=FALSE, warning=FALSE}
 #summary(df_2021)
 #summary(final_data)
@@ -643,7 +646,7 @@ kable(summary_final, caption = "Summary Table of Final Dataset", digits = 1)
 
 \newpage
 
-## Exploratory Analysis 
+## Exploratory Analysis
 
 Prior to performing the regression analysis, we conducted an exploratory analysis by examining the distribution of independent variables. The [Figure 1] indicates that both federal investment amounts and disaster frequencies show a strong right-skewed distribution, with a few states having exceptionally high values compared to the majority. These skewness can violate the assumptions of Ordinary Least Squares (OLS) regression, potentially leading to heteroscedasticity and unreliable coefficient estimates. To solve this issue, we applied a logarithmic transformation to the investment (Total_EE_Investment), disaster (Disasters), and population (Total population) variables for stabilizing the variance and ensuring the robustness of statistical models.
 
@@ -663,7 +666,7 @@ ggpairs(final_data, columns = cols, title = "",
   )
 ```
 
-As part of our exploration, we were interested in where the most disasters in the United States are occurring. If climate disasters influence investment behavior, we might expect states with the highest frequency of disasters to also have the greatest federal investments in the energy and environment sectors.
+As part of our exploration on factors driving investment, we looked at where the most natural disasters occur. If climate disasters influence investment behavior, we might expect that the states with the highest frequency of disasters to also have the greatest federal investments in the energy and environment sectors.
 
 ```{r echo=FALSE, warning=FALSE}
 #visualize frequency of natural disasters 2021-2024
@@ -721,9 +724,9 @@ ggsave(
 #Texas, Florida, and Louisiana have the highest declared disasters from 2021-2024
 ```
 
-The map shows that Texas (n=699), Florida (n=660), and Louisiana (n=650) have the highest declared disasters from 2021-2024. The highest prevalence of natural disasters appears to be concentrated in the South region of the United States. 
+The map shows that Texas (n=699), Florida (n=660), and Louisiana (n=650) have the highest declared disasters from 2021-2024. The highest prevalence of natural disasters appears to be concentrated in the South region of the United States.
 
-We were also interested in the states that received the most federal grants and loans towards energy and environment.
+Next, we looked at the states that received the most federal grants and loans towards energy and environment.
 
 ```{r echo=FALSE, warning=FALSE}
 #total federal energy/env investment map 2021-2024
@@ -792,17 +795,17 @@ ggsave(
 
 ```
 
-The highest federal energy and environment investments from 2021 to 2024 were in California, New York, and Texas. 
+The highest federal energy and environment investments from 2021 to 2024 were in California, New York, and Texas.
 
-State  | Federal energy and environment spending
-------------- | -------------
-California | $82,488,010,951
-New York  | $54,029,205,539
-Texas | $45,365,375,638
+|   State    | Federal energy and environment spending |
+|:----------:|:---------------------------------------:|
+| California |            \$82,488,010,951             |
+|  New York  |            \$54,029,205,539             |
+|   Texas    |            \$45,365,375,638             |
 
-California, New York, and Texas are among the highest populous states and are therefore expected to receive more federal investment. We next looked at the ratio of energy and environment spending compared to total federal spending across the US.  
+California, New York, and Texas are among the highest populous states and are therefore expected to receive more federal investment. We next looked at the ratio of energy and environment spending compared to total federal spending across the US.
 
-```{r}
+```{r echo=FALSE}
 #ratio of Energy investment to Total spending map 2021-2024
 #select TOTAL spending from 2021-2024. 
 TotalFedAction_21_24 <- Investment_state %>% 
@@ -861,14 +864,14 @@ ggsave(
 
 ```
 
-States with the highest ratio of spending towards energy and environment programs are DC, Wyonming, South Dakota, and Montana. 
+States with the highest ratio of spending towards energy and environment programs are DC, Wyoming, South Dakota, and Montana.
 
-State  | Federal energy and environment spending
-------------- | -------------
-District of Columbia | 0.14
-Wyoming  | 0.13
-South Dakota | 0.12
-Montanta | 0.11
+|        State         | Ratio of Federal energy and environment spending |
+|:--------------------:|:------------------------------------------------:|
+| District of Columbia |                       0.14                       |
+|       Wyoming        |                       0.13                       |
+|     South Dakota     |                       0.12                       |
+|       Montanta       |                       0.11                       |
 
 \newpage
 
@@ -963,9 +966,10 @@ if (exists("fcast")) {
 }
   
 ```
-Federal energy and environment investment shows a significant upward trend from 2021 to 2024. A linear regression of annual national spending against time indicates that investment increased by approximately $8.17 billion per year (p = 0.0118), demonstrating a clear positive temporal relationship. This finding is reinforced by a Mann–Kendall trend test (tau = 0.503, z = 2.88, p = 0.00399), which confirms a statistically significant monotonic increase in investment over the period. Together, these results provide strong evidence that federal spending in the energy and environment sectors has grown substantially and consistently across the 2021–2024 window. Forecasts from an ARIMA model suggest that investment levels are likely to remain high in upcoming years, continuing the upward trajectory.
 
-### Question 2: What factors affect total federal energy and environment spending? 
+Federal energy and environment investment shows a significant upward trend from 2021 to 2024. A linear regression of annual national spending against time indicates that investment increased by approximately \$8.17 billion per year (p = 0.0118), demonstrating a clear positive temporal relationship. This finding is reinforced by a Mann–Kendall trend test (tau = 0.503, z = 2.88, p = 0.00399), which confirms a statistically significant monotonic increase in investment over the period. Together, these results provide strong evidence that federal spending in the energy and environment sectors has grown substantially and consistently across the 2021–2024 window. Forecasts from an ARIMA model suggest that investment levels are likely to remain high in upcoming years, continuing the upward trajectory.
+
+### Question 2: What factors affect total federal energy and environment spending?
 
 This section investigated the drivers of federal energy and environmental investment across U.S. states in 2021, specifically examining the roles of environmental necessity (natural disasters) and political demand (public opinion).To establish a basis for our study, we first conducted a multivariable regression analysis to identify which socio-economic factors beyond just population—influence federal investment. We used AIC method to refine the model from income, gender, age, and fuel types to the most statistically relevant driver.
 
@@ -983,7 +987,7 @@ step(model_1)
 #Among all demographic variables, Total population, electricity and median age population are significantly related to energy and environment investment
 ```
 
-As expected, population was the most powerful predictor (t=17.33), explaining the vast majority of the variance in investment. This confirms that any subsequent analysis of disasters or politics must control population variable.Interestingly, Median Household Income was found to be statistically insignificant and was removed during the AIC process. This suggests that in 2021, federal energy and environmental funding was distributed relatively independently of a state's wealth.The Electricity (proportion of homes heated by electricity) and age-related variables (Median age, child) as significant or marginally significant predictors. 
+As expected, population was the most powerful predictor (t=17.33), explaining the vast majority of the variance in investment. This confirms that any subsequent analysis of disasters or politics must control population variable.Interestingly, Median Household Income was found to be statistically insignificant and was removed during the AIC process. This suggests that in 2021, federal energy and environmental funding was distributed relatively independently of a state's wealth.The Electricity (proportion of homes heated by electricity) and age-related variables (Median age, child) as significant or marginally significant predictors.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 model_2 <- lm(data = log_combined2021, log_EE_investment ~  log_disaster, na.action = na.exclude)
@@ -999,7 +1003,7 @@ plot1 <- ggplot(log_combined2021, aes(x=log_disaster, y = log_EE_investment))+
 plot1
 ```
 
-In Model 2, we tested whether disaster frequency alone predicts federal investment. The results indicated a statistically significant positive relationship (t = 3.616, p < 0.001).Specifically, the coefficient of 0.24 suggests a 1% increase in disaster frequency is associated with approximately a 0.24% increase in federal investment. Furthermore, the model yielded an R-squared of 0.256, meaning that disaster frequency alone explains about 25.6% of the variance in funding allocation. While these initial findings support the hypothesis that funding is reactive to environmental needs, the low R-squared value also indicates that nearly 75% of the variation remains unexplained. This limitation, combined with the lack of demographic controls, raises the critical question of whether this correlation is truly causal or merely a reflection of population effect.
+In Model 2, we tested whether disaster frequency alone predicts federal investment. The results indicated a statistically significant positive relationship (t = 3.616, p \< 0.001).Specifically, the coefficient of 0.24 suggests a 1% increase in disaster frequency is associated with approximately a 0.24% increase in federal investment. Furthermore, the model yielded an R-squared of 0.256, meaning that disaster frequency alone explains about 25.6% of the variance in funding allocation. While these initial findings support the hypothesis that funding is reactive to environmental needs, the low R-squared value also indicates that nearly 75% of the variation remains unexplained. This limitation, combined with the lack of demographic controls, raises the critical question of whether this correlation is truly causal or merely a reflection of population effect.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 model_3 <- lm(data = log_combined2021, log_EE_investment ~  `2021`, na.action = na.exclude)
@@ -1015,12 +1019,14 @@ plot2 <- ggplot(log_combined2021, aes(x=`2021`, y = log_EE_investment))+
 plot2
 ```
 
-Similarly, Model 3 examined the relationship between public opinion on climate change and federal investment. The results indicated a significant positive correlation (p < 0.05), suggesting that states with higher climate awareness tend to attract more funding.The positive coefficient indicates that a 1% increase in the climate-conscious voting base correlates with a measurable increase in federal funds. This supports the proactive funding hypothesis, where investment follows the demand for climate policy.
+Similarly, Model 3 examined the relationship between public opinion on climate change and federal investment. The results indicated a significant positive correlation (p \< 0.05), suggesting that states with higher climate awareness tend to attract more funding.The positive coefficient indicates that a 1% increase in the climate-conscious voting base correlates with a measurable increase in federal funds. This supports the proactive funding hypothesis, where investment follows the demand for climate policy.
 
 However, these models were limited by potential confounding factors and limited sample size. To address this, we constructed a Final Integrated Model using merged year data from 2021 to 2024.
 
 ### Question 3: Where is federal energy and environment spending being invested (i.e. where does the money go)?
+
 The Final Integrated Model is crucial because it tests both drivers simultaneously while controlling for population. As the final result indicates, once we control for population, the frequency of the disaster effect disappears, while the political effect remains. It shows that political will is a true independent driver, whereas disaster funding is largely a function of state population.
+
 ```{r echo=FALSE, warning=FALSE}
 #This codes are for the merged (2021-2024) file analysis we can either choose analysis seperately or use model below!
 final_data <- final_data %>%
@@ -1038,19 +1044,19 @@ summary(final_model)
 
 When analyzing the final merged data set (2021-2024) and controlling for population size, the influence of disaster frequency (log_disaster) became statistically insignificant (p = 0.61). This contrasts with the prior analysis and suggests that the previously observed correlation between disasters and investment was largely driven by state population.
 
-However, political pressure on environment(Political_Score) remained a significant predictor (p < 0.05) even after controlling for population. This implies that states with a higher percentage of voters concerned about climate change actively attract more federal investment, independent of their population. 
+However, political pressure on environment(Political_Score) remained a significant predictor (p \< 0.05) even after controlling for population. This implies that states with a higher percentage of voters concerned about climate change actively attract more federal investment, independent of their population.
 
 \newpage
 
 ## Summary and Conclusions
-1. Contrary to our initial hypothesis, natural disaster frequency is not a direct driver of federal investment when state size is taken into account.
-2. Political demand for climate action effectively influences the distribution of federal resources.
+
+1.  Contrary to our initial hypothesis, natural disaster frequency is not a direct driver of federal investment when state size is taken into account.
+2.  Political demand for climate action effectively influences the distribution of federal resources.
 
 The allocation of federal energy and environmental funds is best described as demographically scaled but politically responsive. While the baseline funding is determined by how many people live in a state, the variations above that baseline are significantly shaped by the political will of its voters, rather than the immediate frequency of natural disasters.
-
 
 \newpage
 
 ## References
-Marshall, B. R., Nguyen, H. T., Nguyen, N. H., Visaltanachoti, N., & Young, M. (2021). Do climate risks matter for green investment? Journal of International Financial Markets, Institutions & Money, 75, 101438. https://doi.org/10.1016/j.intfin.2021.101438
 
+Marshall, B. R., Nguyen, H. T., Nguyen, N. H., Visaltanachoti, N., & Young, M. (2021). Do climate risks matter for green investment? Journal of International Financial Markets, Institutions & Money, 75, 101438. <https://doi.org/10.1016/j.intfin.2021.101438>
