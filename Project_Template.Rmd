@@ -779,7 +779,7 @@ ggplot() +
        title = "Ratio of Federal Spending Invested \nin Energy and Environment 2021-2024") + #line break
   theme(legend.position = "right") 
 
-#Out of the total federal spending, the states with the highest proportion towards Energy and Env are  DC, Wyoming, South Dakota, Montana
+#Out of the total federal spending, the states with the highest proportion towards Energy and Env are  DC, Wyoming, South Dakota, Montana 
 
 ```
 
