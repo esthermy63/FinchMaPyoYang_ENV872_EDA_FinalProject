@@ -33,6 +33,7 @@ library("GGally")
 library(readxl)
 library(RColorBrewer)
 library(knitr)
+library(here)
 
 # Set theme
 mytheme <- theme_classic(base_size = 14) +
@@ -697,12 +698,24 @@ mapview(states_sf_join,
         col.regions = rev(brewer.pal(11, "RdBu"))) #high count in red 
 
 #view with ggplot 
-ggplot() +  
+disaster_freq <- ggplot() +  
   geom_sf(data=states_sf_join,aes(fill = Disasters),alpha=0.5) +  
   scale_fill_gradient(low="lightyellow",high="red") + #high count in red 
   labs(fill='Disasters Frequency',
        title = "Disaster Frequency from 2021-2024") +
   theme(legend.position = "right")
+
+disaster_freq #view
+
+#save output
+ggsave(
+  filename = here("./Outputs/disaster_map.jpg"),
+  plot = disaster_freq, 
+  height = 6, 
+  width = 8, 
+  units = "in", 
+  dpi = 300
+  )
 
 #Texas, Florida, and Louisiana have the highest declared disasters from 2021-2024
 ```
@@ -748,7 +761,7 @@ mapview(investment_sf_join,
         col.regions = rev(brewer.pal(11, "RdBu"))) #high spending in red 
 
 #view with ggplot 
-ggplot() +  
+total_energy_investment_map <- ggplot() +  
   geom_sf(data=investment_sf_join,aes(fill = TotalFedAction_EnergyEnv_2021_2024),alpha=0.5) +  
   scale_fill_gradient(low="lightyellow",high="red") + #high count in red 
   labs(fill='Investment',
@@ -756,7 +769,22 @@ ggplot() +
   theme(legend.position = "right") 
 
 #note - removed alaska and hawaii for mapping purposes
+
+#view map
+total_energy_investment_map
+
 #The highest spending is found in California, New York, and Texas
+
+
+#save output
+ggsave(
+  filename = here("./Outputs/total_energy_investment_map.jpg"),
+  plot = total_energy_investment_map, 
+  height = 6, 
+  width = 8, 
+  units = "in", 
+  dpi = 300
+  )
 
 ```
 
@@ -795,14 +823,27 @@ mapview(investment_sf_ratio,
         col.regions = rev(brewer.pal(11, "RdBu"))) #high spending in red 
 
 #view with ggplot 
-ggplot() +  
+ratio_energy_investment_map <- ggplot() +  
   geom_sf(data=investment_sf_ratio,aes(fill = Ratio),alpha=0.5) +  
   scale_fill_gradient(low="lightyellow",high="red") + #high count in red 
   labs(fill='Investment',
        title = "Ratio of Federal Spending Invested \nin Energy and Environment 2021-2024") + #line break
   theme(legend.position = "right") 
 
+#view map
+ratio_energy_investment_map
+
 #Out of the total federal spending, the states with the highest proportion towards Energy and Env are  DC, Wyoming, South Dakota, Montana 
+
+#save output
+ggsave(
+  filename = here("./Outputs/ratio_energy_investment_map.jpg"),
+  plot = ratio_energy_investment_map, 
+  height = 6, 
+  width = 8, 
+  units = "in", 
+  dpi = 300
+  )
 
 ```
 
