@@ -466,9 +466,15 @@ write.csv(final_data, file = "Data/Processed/final_data.csv")
 ```
 
 ## Rationale and Research Questions
-As the threats of climate change continue to grow, green investment becomes increasingly important to mitigate its effects. Our team is interested in the factors driving federal investments in the energy and environmental sectors and whether it has changed over time. To analyze this question, we are using a dataset from the Federal Energy and Environment Investment Project to look at patterns in federal grant and loan spending from 2021 to 2024.  
+As climate change continues to intensify, federal investment in energy and environmental programs has become an important part of how states manage climate risks and build resilience. However, it is still not very clear what influences changes in this type of federal spending or why certain states receive more support than others. Understanding these patterns matters for environmental management because federal resources strongly affect a state’s ability to respond to climate impacts and plan for long term sustainability.
 
-We hypothesized that the frequency of natural disasters might draw more attention to investment into the energy and environmental sectors. Voter concern about climate change may also attract more federal investment. 
+Recent research also shows that climate risks may influence financial decision making. For example, Marshall et al. (2021) find that climate disasters such as hurricanes or floods increase public attention to environmental issues and lead to greater investment in green financial products. They describe this as a salience effect, meaning that when climate risks become more visible, people are more willing to direct their attention and money toward environmental solutions. This idea raises an important question for our study. If climate disasters shape private investment behavior, it is reasonable to ask whether they may also influence decisions about federal energy and environmental spending.
+
+Public attitudes may also play a role. When voters express higher concern about climate change, this can create political pressure that encourages more federal investment in environmental programs. Together, these ideas suggest that both climate risks and public opinion could help explain changes in federal spending patterns.
+
+For these reasons, our project examines federal energy and environment investments from 2021 to 2024. This period includes several major climate events, shifts in national climate policy, and rising public awareness of environmental issues. We aim to understand how federal spending has changed during these years and what factors may be associated with these changes across states.
+
+Our research questions are:
 
 1. How does federal energy and environment investment change from 2021 to 2024?
 
@@ -803,26 +809,19 @@ ggplot() +
 Investment <- Investment_state %>%
   select(
     stname,
-    "TotalFedAction_EnergyEnv_2010","TotalFedAction_2010",
-    "TotalFedAction_EnergyEnv_2011","TotalFedAction_2011",
-    "TotalFedAction_EnergyEnv_2012","TotalFedAction_2012",
-    "TotalFedAction_EnergyEnv_2013","TotalFedAction_2013",
-    "TotalFedAction_EnergyEnv_2014","TotalFedAction_2014",
-    "TotalFedAction_EnergyEnv_2015","TotalFedAction_2015",
-    "TotalFedAction_EnergyEnv_2016","TotalFedAction_2016",
-    "TotalFedAction_EnergyEnv_2017","TotalFedAction_2017",
-    "TotalFedAction_EnergyEnv_2018","TotalFedAction_2018",
-    "TotalFedAction_EnergyEnv_2019","TotalFedAction_2019",
-    "TotalFedAction_EnergyEnv_2020","TotalFedAction_2020",
-    "TotalFedAction_EnergyEnv_2021","TotalFedAction_2021",
-    "TotalFedAction_EnergyEnv_2022","TotalFedAction_2022",
-    "TotalFedAction_EnergyEnv_2023","TotalFedAction_2023",
-    "TotalFedAction_EnergyEnv_2024","TotalFedAction_2024"
+    starts_with("TotalFedAction_EnergyEnv_"),
+    starts_with("TotalFedAction_")
   ) %>%
-  mutate(across(contains("FedAction"), ~ as.numeric(str_replace_all(.x, "[\\$,]", ""))))
+  mutate(across(contains("FedAction"),
+                ~ as.numeric(gsub("[\\$,() ]", "", .x))))
 
 Investment_long <- Investment %>%
-  pivot_longer(cols = -stname, names_to = "YearColumn", values_to = "Spending") %>%
+  pivot_longer(
+    cols = -stname,
+    names_to = "YearColumn",
+    values_to = "Spending",
+    values_drop_na = FALSE
+  ) %>%
   mutate(
     Year = as.integer(str_extract(YearColumn, "\\d{4}")),
     Metric = if_else(str_detect(YearColumn, "EnergyEnv"), "EnergyEnv", "Total"),
@@ -835,34 +834,62 @@ Investment_nat <- Investment_long %>%
   group_by(Year, Metric) %>%
   summarise(Spending = sum(Spending, na.rm = TRUE), .groups = "drop")
 
-Investment_ts <- Investment_nat %>%
+Investment_ee_nat <- Investment_nat %>%
   filter(Metric == "EnergyEnv") %>%
-  select(Year, Spending) %>%
-  as_tsibble(index = Year)
+  arrange(Year) %>%
+  filter(Year >= min(Year, na.rm = TRUE), Year <= max(Year, na.rm = TRUE))
 
-Investment_models <- Investment_ts %>%
-  model(
-    arima = ARIMA(Spending),
-    ets = ETS(Spending)
-  )
+start_year <- min(Investment_ee_nat$Year, na.rm = TRUE)
+end_year <- max(Investment_ee_nat$Year, na.rm = TRUE)
+years_seq <- seq(start_year, end_year)
 
-Investment_fc <- Investment_models %>% forecast(h = 5)
+Investment_ee_nat_full <- tibble(Year = years_seq) %>%
+  left_join(Investment_ee_nat %>% select(Year, Spending), by = "Year")
 
-Investment_fc_tbl <- as_tibble(Investment_fc)
+EE_ts <- ts(Investment_ee_nat_full$Spending, start = start_year, frequency = 1)
 
-p_ts <- ggplot(Investment_ts, aes(x = Year, y = Spending)) +
-  geom_line(size = 1) + geom_point() +
-  labs(x = "Year", y = "Spending", title = "National Investment (Energy & Environment)")
+df_plot <- Investment_ee_nat_full
+df_plot <- df_plot %>% mutate(Trend = as.numeric(lm(Spending ~ Year, data = df_plot)$fitted.values))
 
-p_fc <- autoplot(Investment_ts, Spending) +
-  autolayer(Investment_fc) +
-  labs(title = "5-year Forecast — Investment (Energy & Environment)")
-
+p_ts <- ggplot(df_plot, aes(x = Year, y = Spending)) +
+  geom_line(size = 1) +
+  geom_point() +
+  geom_line(aes(y = Trend), color = "red", linetype = "dashed") +
+  labs(x = "Year", y = "National Energy & Environment Spending",
+       title = "Annual National Investment (Energy & Environment): observed + linear trend") +
+  theme_minimal()
 print(p_ts)
-print(p_fc)
 
+lm_fit <- lm(Spending ~ Year, data = df_plot)
+summary(lm_fit)
+
+mk_result <- trend::mk.test(EE_ts)
+mk_result
+summary(mk_result)
+
+if (sum(!is.na(EE_ts)) >= 8) {
+  fit_arima <- forecast::auto.arima(EE_ts, seasonal = FALSE)
+  fcast <- forecast::forecast(fit_arima, h = 5)
+  print(fit_arima)
+  plot(fcast, main = "ARIMA forecast (5 years) - National EE Spending")
+} else {
+  message("Too few non-missing years for reliable ARIMA fitting/forecast.")
+}
+
+if (exists("fcast")) {
+  fcast_tbl <- tibble(
+    Year = (end_year + 1):(end_year + length(fcast$mean)),
+    Forecast = as.numeric(fcast$mean),
+    Lo80 = as.numeric(fcast$lower[ , "80%"]),
+    Hi80 = as.numeric(fcast$upper[ , "80%"]),
+    Lo95 = as.numeric(fcast$lower[ , "95%"]),
+    Hi95 = as.numeric(fcast$upper[ , "95%"])
+  )
+  print(fcast_tbl)
+}
   
 ```
+Federal energy and environment investment shows a significant upward trend from 2021 to 2024. A linear regression of annual national spending against time indicates that investment increased by approximately $8.17 billion per year (p = 0.0118), demonstrating a clear positive temporal relationship. This finding is reinforced by a Mann–Kendall trend test (tau = 0.503, z = 2.88, p = 0.00399), which confirms a statistically significant monotonic increase in investment over the period. Together, these results provide strong evidence that federal spending in the energy and environment sectors has grown substantially and consistently across the 2021–2024 window. Forecasts from an ARIMA model suggest that investment levels are likely to remain high in upcoming years, continuing the upward trajectory.
 
 ### Question 2: What factors affect total federal energy and environment spending? 
 
@@ -951,4 +978,5 @@ The allocation of federal energy and environmental funds is best described as de
 \newpage
 
 ## References
-<add references here if relevant, otherwise delete this section> 
+Marshall, B. R., Nguyen, H. T., Nguyen, N. H., Visaltanachoti, N., & Young, M. (2021). Do climate risks matter for green investment? Journal of International Financial Markets, Institutions & Money, 75, 101438. https://doi.org/10.1016/j.intfin.2021.101438
+
