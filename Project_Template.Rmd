@@ -795,6 +795,7 @@ ggplot() +
 ## Analysis
 
 ### Question 1: How does federal energy and environment investment change from 2021 to 2024?
+
 ```{r eval=FALSE, include=FALSE}
 #time series analysis
 #Investment trend analysis
