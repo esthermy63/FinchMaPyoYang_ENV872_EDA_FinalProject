@@ -2,11 +2,17 @@
 title: "What Drives Energy and Environment Investment? A 2021-2024 Analytic Perspective"
 author: "E. Yang, Y. Ma, J. Pyo, M. Finch"
 date: "`r Sys.Date()`"
+<<<<<<< HEAD
 output: 
   html_document:
   toc: true
   toc_depth: 3
 
+=======
+output:
+  html_document: default
+  pdf_document: default
+>>>>>>> 67adb5b (analysis)
 editor_options:
   chunk_output_type: console
 
@@ -621,9 +627,9 @@ kable(summary_final, caption = "Summary Table of Final Dataset", digits = 1)
 
 ## Exploratory Analysis 
 
-Prior to performing the regression analysis, we conducted an exploratory analysis by examining the distributional properties of our key variables. The Figure 1 indicates that both federal investment amounts and disaster frequencies exhibit a strong right-skewed distribution, with a few states having exceptionally high values compared to the majority. Such deviations from normality can violate the assumptions of Ordinary Least Squares (OLS) regression, potentially leading to heteroscedasticity and unreliable coefficient estimates. To solve this issue, we applied a logarithmic transformation to the investment (Total_EE_Investment), disaster (Disasters), and population (Total population) variables. This transformation stabilizes the variance and ensures the robustness of our statistical models.
+Prior to performing the regression analysis, we conducted an exploratory analysis by examining the distribution of independent variables. The [Figure 1] indicates that both federal investment amounts and disaster frequencies show a strong right-skewed distribution, with a few states having exceptionally high values compared to the majority. These skewness can violate the assumptions of Ordinary Least Squares (OLS) regression, potentially leading to heteroscedasticity and unreliable coefficient estimates. To solve this issue, we applied a logarithmic transformation to the investment (Total_EE_Investment), disaster (Disasters), and population (Total population) variables for stabilizing the variance and ensuring the robustness of statistical models.
 
-```{r echo=FALSE, warning=FALSE, fig.cap="figure 1: Scatter Plot"}
+```{r echo=FALSE, warning=FALSE, fig.cap="[figure 1: Scatter Plot]"}
 #examine the normal distribution of data
 cols <- c(3:12)
 
@@ -859,7 +865,7 @@ print(p_fc)
 
 ### Question 2: What factors affect total federal energy and environment spending? 
 
-This section investigated the drivers of federal energy and environmental investment across U.S. states in 2021, specifically examining the roles of environmental necessity (natural disasters) and political demand (public opinion).
+This section investigated the drivers of federal energy and environmental investment across U.S. states in 2021, specifically examining the roles of environmental necessity (natural disasters) and political demand (public opinion).To establish a basis for our study, we first conducted a multivariable regression analysis to identify which socio-economic factors beyond just population—influence federal investment. We used AIC method to refine the model from income, gender, age, and fuel types to the most statistically relevant driver.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 #Demographic Linear regression
@@ -872,18 +878,14 @@ log_combined2021<- combined2021%>%
 model_1 <- lm(data = log_combined2021, log_EE_investment ~ log_pop + Female + child + `Median age (years)` + `Median household income (dollars)`  + Gas + Electricity, na.action = na.exclude)
 summary(model_1)
 step(model_1)
-
-model_2 <- lm(data = log_combined2021, TotalFedAction_EnergyEnv_2021 ~ log_pop + child + `Median age (years)`  + Electricity)
-summary(model_2)
-step(model_2)
 #Among all demographic variables, Total population, electricity and median age population are significantly related to energy and environment investment
 ```
 
-In model 1 & 2, preliminary demographic analysis was conducted to identify baseline socio-economic drivers. The results indicated that Total Population (log_pop) is the dominant predictor of federal investment (p < 0.001), while median household income showed no significant effect. This necessitates including population as a key control variable in subsequent hypothesis testing to avoid omitted variable bias.
+As expected, population was the most powerful predictor (t=17.33), explaining the vast majority of the variance in investment. This confirms that any subsequent analysis of disasters or politics must control population variable.Interestingly, Median Household Income was found to be statistically insignificant and was removed during the AIC process. This suggests that in 2021, federal energy and environmental funding was distributed relatively independently of a state's wealth.The Electricity (proportion of homes heated by electricity) and age-related variables (Median age, child) as significant or marginally significant predictors. 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-model_3 <- lm(data = log_combined2021, log_EE_investment ~  log_disaster, na.action = na.exclude)
-summary(model_3) #frequency of disaster is related
+model_2 <- lm(data = log_combined2021, log_EE_investment ~  log_disaster, na.action = na.exclude)
+summary(model_2) #frequency of disaster is related
 ```
 
 ```{r}
@@ -895,11 +897,10 @@ plot1 <- ggplot(log_combined2021, aes(x=log_disaster, y = log_EE_investment))+
 plot1
 ```
 
-Before constructing the final integrated model, we tested our hypotheses individually to understand the baseline relationships.
-In model 3, we tested whether disaster frequency alone predicts investment. The model showed a significant positive relationship (p < 0.001), initially supporting the hypothesis that funding is reactive. At first glance, this supports the "reactive funding" hypothesis. However, this model explains only a small portion of the variance $R^2 \approx 0.25), warning us that other critical factors (like population size) are missing.
+In Model 2, we tested whether disaster frequency alone predicts federal investment. The results indicated a statistically significant positive relationship (t = 3.616, p < 0.001).Specifically, the coefficient of 0.24 suggests a 1% increase in disaster frequency is associated with approximately a 0.24% increase in federal investment. Furthermore, the model yielded an R-squared of 0.256, meaning that disaster frequency alone explains about 25.6% of the variance in funding allocation. While these initial findings support the hypothesis that funding is reactive to environmental needs, the low R-squared value also indicates that nearly 75% of the variation remains unexplained. This limitation, combined with the lack of demographic controls, raises the critical question of whether this correlation is truly causal or merely a reflection of population effect.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-model_4 <- lm(data = log_combined2021, log_EE_investment ~  `2021`, na.action = na.exclude)
+model_3 <- lm(data = log_combined2021, log_EE_investment ~  `2021`, na.action = na.exclude)
 summary(model_4) # Public awareness is related
 ```
 
@@ -912,12 +913,12 @@ plot2 <- ggplot(log_combined2021, aes(x=`2021`, y = log_EE_investment))+
 plot2
 ```
 
-Similarly, Model 4 examined the relationship between public opinion on climate change and federal investment. The results indicated a significant positive correlation (p < 0.05), suggesting that states with higher climate awareness tend to attract more funding.The positive coefficient indicates that a 1% increase in the climate-conscious voting base correlates with a measurable increase in federal funds. This supports the "proactive funding" hypothesis, where investment follows the demand for climate policy.
+Similarly, Model 3 examined the relationship between public opinion on climate change and federal investment. The results indicated a significant positive correlation (p < 0.05), suggesting that states with higher climate awareness tend to attract more funding.The positive coefficient indicates that a 1% increase in the climate-conscious voting base correlates with a measurable increase in federal funds. This supports the proactive funding hypothesis, where investment follows the demand for climate policy.
 
-However, these models were limited by potential confounding factors (e.g., state size) and limited sample size (single year). To address this, we constructed a Final Integrated Model using integrated year data from 2021 to 2024.
+However, these models were limited by potential confounding factors and limited sample size. To address this, we constructed a Final Integrated Model using merged year data from 2021 to 2024.
 
 ### Question 3: Where is federal energy and environment spending being invested (i.e. where does the money go)?
-The Final Integrated Model is crucial because it tests both drivers simultaneously while controlling for population. As the final results show, once we control for population, the "Disaster" effect disappears, but the "Political" effect remains—proving that political will is a true independent driver, whereas disaster funding is largely a function of state scale.
+The Final Integrated Model is crucial because it tests both drivers simultaneously while controlling for population. As the final result indicates, once we control for population, the frequency of the disaster effect disappears, while the political effect remains. It shows that political will is a true independent driver, whereas disaster funding is largely a function of state population.
 ```{r echo=FALSE, warning=FALSE}
 #This codes are for the merged (2021-2024) file analysis we can either choose analysis seperately or use model below!
 final_data <- final_data %>%
@@ -933,11 +934,9 @@ final_model <- lm(data = final_data,
 summary(final_model)
 ```
 
-When analyzing the full panel data (2021-2024) and controlling for population size, the influence of disaster frequency (log_disaster) became statistically insignificant (p = 0.61). This contrasts with the preliminary analysis and suggests that the previously observed correlation between disasters and investment was largely driven by state population experience more disasters and receive more funding.
+When analyzing the final merged data set (2021-2024) and controlling for population size, the influence of disaster frequency (log_disaster) became statistically insignificant (p = 0.61). This contrasts with the prior analysis and suggests that the previously observed correlation between disasters and investment was largely driven by state population.
 
-However, political pressure (Political_Score) remained a significant predictor (p < 0.05) even after controlling for population. This implies that states with a higher percentage of voters concerned about climate change actively attract more federal investment, independent of their size.
-
-Furthermore, a temporal analysis reveals a significant surge in investment in 2024 (Coef = 0.237, p < 0.001) compared to the 2021 baseline.
+However, political pressure on environment(Political_Score) remained a significant predictor (p < 0.05) even after controlling for population. This implies that states with a higher percentage of voters concerned about climate change actively attract more federal investment, independent of their population. 
 
 \newpage
 
