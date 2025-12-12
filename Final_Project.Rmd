@@ -508,7 +508,7 @@ Data sets used for the study are listed as follow:
 | Variables Used                     | Estimated % of adults who are somewhat or very worried about global warming |
 | Date Range                         | 2021-2024                                                                   |
 
-| Detail         | Description                                                               |
+| Spatial Data         | Description                                                               |
 |------------------------------------|------------------------------------|
 | Data Source    | United States Census Bureau                                               |
 | Retrieved from | <https://www2.census.gov/geo/tiger/GENZ2018/shp/cb_2018_us_state_20m.zip> |
