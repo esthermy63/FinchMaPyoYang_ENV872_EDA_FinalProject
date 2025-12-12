@@ -805,7 +805,7 @@ The highest federal energy and environment investments from 2021 to 2024 were in
 
 California, New York, and Texas are among the highest populous states and are therefore expected to receive more federal investment. We next looked at the ratio of energy and environment spending compared to total federal spending across the US.
 
-```{r echo=FALSE}
+```{r echo=FALSE, warning=FALSE}
 #ratio of Energy investment to Total spending map 2021-2024
 #select TOTAL spending from 2021-2024. 
 TotalFedAction_21_24 <- Investment_state %>% 
