@@ -721,7 +721,9 @@ ggsave(
 #Texas, Florida, and Louisiana have the highest declared disasters from 2021-2024
 ```
 
-The map shows that Texas (n=699), Florida (n=660), and Lousiana (n=650) have the highest declared disasters from 2021-2024. The highest prevalence of natural disasters appears to be concentrated in the South region of the United States. 
+The map shows that Texas (n=699), Florida (n=660), and Louisiana (n=650) have the highest declared disasters from 2021-2024. The highest prevalence of natural disasters appears to be concentrated in the South region of the United States. 
+
+We were also interested in the states that received the most federal grants and loans towards energy and environment.
 
 ```{r echo=FALSE, warning=FALSE}
 #total federal energy/env investment map 2021-2024
@@ -789,6 +791,15 @@ ggsave(
   )
 
 ```
+
+The highest federal energy and environment investments from 2021 to 2024 were in California, New York, and Texas. 
+
+State  | Federal energy and environment spending
+------------- | -------------
+California | $82,488,010,951
+New York  | $54,029,205,539
+Texas | $45,365,375,638
+
 
 ```{r}
 #ratio of Energy investment to Total spending map 2021-2024
