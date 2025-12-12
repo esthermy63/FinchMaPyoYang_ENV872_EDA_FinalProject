@@ -1,5 +1,5 @@
 ---
-title: "What Drives Energy and Environment Investment? A 2021-2024 Analytic Perspective"
+title: "What Drives Federal Energy and Environment Investment? A 2021-2024 Analytic Perspective"
 author: "E. Yang, Y. Ma, J. Pyo, M. Finch"
 date: "`r Sys.Date()`"
 output: 
@@ -663,6 +663,7 @@ ggpairs(final_data, columns = cols, title = "",
   )
 ```
 
+As part of our exploration, we were interested in where the most disasters in the United States are occurring. If climate disasters influence investment behavior, we might expect states with the highest frequency of disasters to also have the greatest federal investments in the energy and environment sectors.
 
 ```{r echo=FALSE, warning=FALSE}
 #visualize frequency of natural disasters 2021-2024
@@ -720,6 +721,7 @@ ggsave(
 #Texas, Florida, and Louisiana have the highest declared disasters from 2021-2024
 ```
 
+The map shows that Texas (n=699), Florida (n=660), and Lousiana (n=650) have the highest declared disasters from 2021-2024. The highest prevalence of natural disasters appears to be concentrated in the South region of the United States. 
 
 ```{r echo=FALSE, warning=FALSE}
 #total federal energy/env investment map 2021-2024
