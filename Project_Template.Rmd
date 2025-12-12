@@ -2,11 +2,14 @@
 title: "What Drives Energy and Environment Investment? A 2021-2024 Analytic Perspective"
 author: "E. Yang, Y. Ma, J. Pyo, M. Finch"
 date: "`r Sys.Date()`"
-output:
-  pdf_document: default
-  html_document: default
+output: 
+  html_document:
+  toc: true
+  toc_depth: 3
+
 editor_options:
   chunk_output_type: console
+
 ---
 
 \listoftables 
@@ -506,10 +509,10 @@ Date Range  | 2018
 \newpage
 
 ## Dataset Information
-We selected 12 variables of interest from different data sources, from demographic characteristics, disaster frequency, and percentage of public awareness of climate change.
-Each annual dataset was processed and summarized in R. For every year, the resulting dataset contains 51 observations and 12 variables (one row per state, plus D.C.).
+We selected 10 variables of interest from different data sources, from demographic characteristics, disaster frequency, and percentage of public awareness of climate change.
+Each annual dataset was processed and summarized in R. For every year, the resulting dataset contains 51 observations (one row per state, plus D.C.) and 12 columns (10 variables, state name and year).
 
-Below is an example summary output for the 2021 dataset:
+Below is an example summary output for the 2021 dataset, and for further analysis, dataset from each year were bound by rows, producing a final dataset of 204 objects of 10 variables.
 ```{r echo=FALSE, warning=FALSE}
 #summary(df_2021)
 #summary(final_data)
@@ -614,7 +617,6 @@ kable(summary_final, caption = "Summary Table of Final Dataset", digits = 1)
 
 ```
 
-For further analysis, dataset from each year were bound by rows, producing a final dataset of 204 objects of 12 variables.
 \newpage
 
 ## Exploratory Analysis 
