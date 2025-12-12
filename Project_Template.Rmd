@@ -813,7 +813,7 @@ ggplot() +
 
 ### Question 1: How does federal energy and environment investment change from 2021 to 2024?
 
-```{r eval=FALSE, include=FALSE}
+```{r echo=FALSE}
 #time series analysis
 #Investment trend analysis
 
@@ -948,7 +948,7 @@ plot2 <- ggplot(log_combined2021, aes(x=`2021`, y = log_EE_investment))+
   geom_point()+
   geom_smooth(method = 'lm' )+
   ylab("Logarithm of Energy and Environment Investment")+
-  xlab("")
+  xlab(" % of people who are worried about climate change")
 plot2
 ```
 
