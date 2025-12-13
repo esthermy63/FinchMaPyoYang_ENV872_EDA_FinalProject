@@ -695,7 +695,7 @@ states_sf_join <- states_clean %>%
     by = c("NAME" = "State")  
     ) 
 
-st_crs(states_sf_join) #NAD83, espg 4269
+#st_crs(states_sf_join) NAD83, espg 4269
 
 #View with mapview - count of disasters
 mapview(states_sf_join,  
