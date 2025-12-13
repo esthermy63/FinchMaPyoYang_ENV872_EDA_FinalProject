@@ -929,7 +929,7 @@ EE_ts <- ts(Investment_ee_nat_full$Spending, start = start_year, frequency = 1)
 
 df_plot <- Investment_ee_nat_full
 df_plot <- df_plot %>% mutate(Trend = as.numeric(lm(Spending ~ Year, data = df_plot)$fitted.values))
-df_plot
+#df_plot
 
 p_ts <- ggplot(df_plot, aes(x = Year, y = Spending)) +
   geom_line(size = 1) +
@@ -944,8 +944,7 @@ lm_fit <- lm(Spending ~ Year, data = df_plot)
 tbl_regression(lm_fit) %>%
   add_significance_stars()
 
-mk_result <- trend::mk.test(EE_ts)
-mk_result
+#mk_result <- trend::mk.test(EE_ts)
 #if (sum(!is.na(EE_ts)) >= 8) {
 #  fit_arima <- forecast::auto.arima(EE_ts, seasonal = FALSE)
 #  fcast <- forecast::forecast(fit_arima, h = 5)
